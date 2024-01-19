@@ -51,3 +51,7 @@ modules:
       test: test-topic
     subscriptions:
       test: test-topic-sub
+  worker:
+    metrics:
+      collect:
+        enabled: true
