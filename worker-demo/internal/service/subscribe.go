@@ -7,7 +7,13 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log"
+	"github.com/prometheus/client_golang/prometheus"
 )
+
+var SubscribeCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	Name: "worker_demo_app_messages_received_total",
+	Help: "Total number of received messages",
+})
 
 type Subscriber interface {
 	Subscribe(ctx context.Context) error
@@ -35,6 +41,8 @@ func (s *PubSubSubscriber) Subscribe(ctx context.Context) error {
 		log.CtxLogger(ctx).Info().Msgf("received new message, data: %v", string(msg.Data))
 
 		msg.Ack()
+
+		SubscribeCounter.Inc()
 	})
 }
 

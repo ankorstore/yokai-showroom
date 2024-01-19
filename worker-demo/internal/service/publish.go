@@ -6,7 +6,13 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log"
+	"github.com/prometheus/client_golang/prometheus"
 )
+
+var PublishCounter = prometheus.NewCounter(prometheus.CounterOpts{
+	Name: "worker_demo_app_messages_published_total",
+	Help: "Total number of published messages",
+})
 
 type Publisher interface {
 	Publish(ctx context.Context, message string) error
@@ -40,12 +46,14 @@ func (p *PubSubPublisher) Publish(ctx context.Context, message string) error {
 		return err
 	}
 
+	PublishCounter.Inc()
+
 	return nil
 }
 
-func (h *PubSubPublisher) topic(ctx context.Context) (*pubsub.Topic, error) {
-	topicName := h.config.GetString("modules.pubsub.topics.test")
-	topic := h.client.Topic(topicName)
+func (p *PubSubPublisher) topic(ctx context.Context) (*pubsub.Topic, error) {
+	topicName := p.config.GetString("modules.pubsub.topics.test")
+	topic := p.client.Topic(topicName)
 
 	exists, err := topic.Exists(ctx)
 	if err != nil {
@@ -57,7 +65,7 @@ func (h *PubSubPublisher) topic(ctx context.Context) (*pubsub.Topic, error) {
 	if !exists {
 		log.CtxLogger(ctx).Info().Msgf("topic %s does not exist, creating it", topicName)
 
-		topic, err = h.client.CreateTopic(ctx, topicName)
+		topic, err = p.client.CreateTopic(ctx, topicName)
 		if err != nil {
 			log.CtxLogger(ctx).Error().Err(err).Msg("cannot create topic")
 

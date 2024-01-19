@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal/service"
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal/worker"
+	"github.com/ankorstore/yokai/fxmetrics"
 	"github.com/ankorstore/yokai/fxworker"
 	"go.uber.org/fx"
 )
@@ -22,5 +23,9 @@ func ProvideServices() fx.Option {
 			),
 		),
 		fxworker.AsWorker(worker.NewSubscribeWorker),
+		fxmetrics.AsMetricsCollectors(
+			service.PublishCounter,
+			service.SubscribeCounter,
+		),
 	)
 }
