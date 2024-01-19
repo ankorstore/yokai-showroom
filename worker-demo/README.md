@@ -26,7 +26,7 @@ This demo provides:
 - a demo [Yokai](https://github.com/ankorstore/yokai) application, with:
 	- the [fxhttpserver](https://github.com/ankorstore/yokai/tree/main/fxhttpserver) module to offer a Pub/Sub
 	  publication endpoint
-	- the [fxworker](https://github.com/ankorstore/yokai/tree/main/fxworker) modules to offer a worker running a Pub/Sub
+	- the [fxworker](https://github.com/ankorstore/yokai/tree/main/fxworker) module to offer a worker running a Pub/Sub
 	  subscriber
 - a [Pub/Sub](https://cloud.google.com/pubsub) emulator
 
@@ -36,7 +36,7 @@ See the [Yokai documentation](https://ankorstore.github.io/yokai) for more detai
 
 ### Start the application
 
-To start, simply run:
+To start the application, simply run:
 
 ```shell
 make fresh
@@ -80,8 +80,8 @@ This template is following the [standard go project layout](https://github.com/g
 	- `bootstrap.go`: bootstrap (modules, lifecycles, etc)
 	- `routing.go`: routing
 	- `services.go`: dependency injection
-- `modules`: application modules
-	- `fxpubsub`: Pub/Sub module
+- `modules/`: application modules
+	- `fxpubsub/`: Pub/Sub module
 
 ### Makefile
 
