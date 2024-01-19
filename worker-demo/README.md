@@ -13,7 +13,7 @@
 	* [Start the application](#start-the-application)
 	* [Message publication](#message-publication)
 	* [Message subscription](#message-subscription)
-* [Template contents](#template-contents)
+* [Contents](#contents)
 	* [Layout](#layout)
 	* [Makefile](#makefile)
 
@@ -65,7 +65,7 @@ make logs
 You will see the [SubscribeWorker](internal/worker/subscribe.go) subscribed to Pub/Sub in action, logging the received
 messages.
 
-## Template contents
+## Contents
 
 ### Layout
 
