@@ -1,0 +1,53 @@
+app:
+  name: worker-demo-app
+  version: 0.1.0
+modules:
+  core:
+    server:
+      port: 8081
+      metrics:
+        expose: true
+        collect:
+          enabled: true
+      healthcheck:
+        startup:
+          expose: true
+        readiness:
+          expose: true
+        liveness:
+          expose: true
+      debug:
+        config:
+          expose: true
+        pprof:
+          expose: true
+        routes:
+          expose: true
+        stats:
+          expose: true
+        build:
+          expose: true
+        modules:
+          expose: true
+  http:
+    server:
+      port: 8080
+      trace:
+        enabled: true
+      metrics:
+        collect:
+          enabled: true
+  log:
+    level: debug
+  trace:
+    processor:
+      type: noop
+  pubsub:
+    project:
+      id: ${PUBSUB_PROJECT_ID}
+    emulator:
+      host: ${PUBSUB_EMULATOR_HOST}
+    topics:
+      test: test-topic
+    subscriptions:
+      test: test-topic-sub

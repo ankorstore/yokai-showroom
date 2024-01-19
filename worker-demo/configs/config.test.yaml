@@ -1,0 +1,8 @@
+app:
+  debug: true
+modules:
+  log:
+    output: test
+  trace:
+    processor:
+      type: test

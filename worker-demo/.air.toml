@@ -1,0 +1,41 @@
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "build"
+
+[build]
+  args_bin = []
+  bin = "./build/app"
+  cmd = "go build -gcflags='all=-N -l' -o ./build/app ."
+  delay = 0
+  exclude_dir = ["assets", "build", "vendor", "testdata"]
+  exclude_file = []
+  exclude_regex = ["_test.go"]
+  exclude_unchanged = false
+  follow_symlink = false
+  include_dir = []
+  include_ext = ["go", "tpl", "tmpl", "html", "yaml"]
+  include_file = []
+  kill_delay = "0s"
+  log = "build-errors.log"
+  rerun = false
+  rerun_delay = 500
+  send_interrupt = false
+  stop_on_error = true
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = true
+  time = true
+
+[misc]
+  clean_on_exit = false
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true

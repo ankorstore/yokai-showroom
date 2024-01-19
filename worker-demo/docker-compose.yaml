@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  worker-demo-app:
+    container_name: worker-demo-app
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+    networks:
+      - worker-demo
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    expose:
+      - "8080"
+      - "8081"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  worker-demo-pubsub:
+    container_name: worker-demo-pubsub
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:460.0.0-emulators
+    command: "gcloud beta emulators pubsub start --host-port=0.0.0.0:8085"
+    restart: always
+    networks:
+      - worker-demo
+    ports:
+      - "8085:8085"
+    expose:
+      - "8085"
+    env_file:
+      - .env
+
+networks:
+  worker-demo:
+    driver: bridge
