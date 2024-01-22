@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -37,8 +38,10 @@ func (s *PubSubSubscriber) Subscribe(ctx context.Context) error {
 		return err
 	}
 
-	return subscription.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		log.CtxLogger(ctx).Info().Msgf("received new message, data: %v", string(msg.Data))
+	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
+		fmt.Println("!!!!!! got message")
+
+		log.CtxLogger(c).Info().Msgf("****** received new message: %v", string(msg.Data))
 
 		msg.Ack()
 
