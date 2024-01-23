@@ -9,16 +9,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// PublishHandler is the http handler for [GET] /publish.
 type PublishHandler struct {
 	publisher service.Publisher
 }
 
+// NewPublishHandler returns a new PublishHandler.
 func NewPublishHandler(publisher service.Publisher) *PublishHandler {
 	return &PublishHandler{
 		publisher: publisher,
 	}
 }
 
+// Handle handles the http request.
 func (h *PublishHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		message := time.Now().Format(time.DateTime)

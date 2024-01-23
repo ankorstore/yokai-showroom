@@ -1,83 +1,131 @@
 package handler_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
-	"time"
 
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal"
+	"github.com/ankorstore/yokai-showroom/worker-demo/internal/service"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"go.uber.org/fx"
 )
 
+type PublisherMock struct {
+	mock.Mock
+}
+
+func (m *PublisherMock) Publish(context.Context, string) error {
+	return m.Called().Error(0)
+}
+
 func TestPublishHandlerSuccess(t *testing.T) {
-	t.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", internal.RootDir))
-	t.Setenv("PUBSUB_PROJECT_ID", "worker-demo-project")
+	publisherMock := new(PublisherMock)
+	publisherMock.On("Publish").Return(nil)
 
 	var httpServer *echo.Echo
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
-	var metricsRegistry *prometheus.Registry
 
-	app := internal.Bootstrapper.BootstrapTestApp(
+	internal.RunTest(
 		t,
 		fx.Populate(
 			&httpServer,
 			&logBuffer,
 			&traceExporter,
-			&metricsRegistry,
+		),
+		fx.Replace(
+			fx.Annotate(
+				publisherMock,
+				fx.As(new(service.Publisher)),
+			),
 		),
 	)
 
-	app.RequireStart()
-
-	time.Sleep(1 * time.Second)
-
+	// call [GET] /publish?message=test
 	req := httptest.NewRequest(http.MethodGet, "/publish?message=test", nil)
 	rec := httptest.NewRecorder()
 	httpServer.ServeHTTP(rec, req)
 
-	app.RequireStop()
-
 	// response assertion
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Contains(t, rec.Body.String(), "publication of message test success.")
-
-	ll, _ := logBuffer.Records()
-	for _, l := range ll {
-		fmt.Printf("%v\n", l)
-	}
 
 	// logs assertion
 	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 		"level":   "info",
 		"service": "worker-demo-app",
 		"method":  "GET",
+		"status":  200,
 		"uri":     "/publish?message=test",
 	})
 
 	// trace assertion
-	tracetest.AssertHasTraceSpan(t, traceExporter, "GET /publish")
-
-	// metrics assertion
-	expectedMetric := `
-		# HELP worker_demo_app_messages_published_total Total number of published messages
-		# TYPE worker_demo_app_messages_published_total counter
-		worker_demo_app_messages_published_total 1
-	`
-
-	err := testutil.GatherAndCompare(
-		metricsRegistry,
-		strings.NewReader(expectedMetric),
-		"worker_demo_app_messages_published_total",
+	tracetest.AssertHasTraceSpan(
+		t,
+		traceExporter,
+		"GET /publish",
+		semconv.HTTPMethod(http.MethodGet),
+		semconv.HTTPRoute("/publish"),
+		semconv.HTTPStatusCode(http.StatusOK),
 	)
-	assert.NoError(t, err)
+}
+
+func TestPublishHandlerError(t *testing.T) {
+	var httpServer *echo.Echo
+	var logBuffer logtest.TestLogBuffer
+	var traceExporter tracetest.TestTraceExporter
+
+	publisherMock := new(PublisherMock)
+	publisherMock.On("Publish").Return(fmt.Errorf("custom error"))
+
+	internal.RunTest(
+		t,
+		fx.Populate(
+			&httpServer,
+			&logBuffer,
+			&traceExporter,
+		),
+		fx.Replace(
+			fx.Annotate(
+				publisherMock,
+				fx.As(new(service.Publisher)),
+			),
+		),
+	)
+
+	// call [GET] /publish?message=test
+	req := httptest.NewRequest(http.MethodGet, "/publish?message=test", nil)
+	rec := httptest.NewRecorder()
+	httpServer.ServeHTTP(rec, req)
+
+	// response assertion
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+	assert.Contains(t, rec.Body.String(), "publication of message test failure: custom error.")
+
+	// logs assertion
+	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+		"level":   "info",
+		"service": "worker-demo-app",
+		"method":  "GET",
+		"status":  500,
+		"uri":     "/publish?message=test",
+	})
+
+	// trace assertion
+	tracetest.AssertHasTraceSpan(
+		t,
+		traceExporter,
+		"GET /publish",
+		semconv.HTTPMethod(http.MethodGet),
+		semconv.HTTPRoute("/publish"),
+		semconv.HTTPStatusCode(http.StatusInternalServerError),
+	)
 }

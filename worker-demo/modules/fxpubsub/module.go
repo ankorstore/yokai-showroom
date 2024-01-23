@@ -32,17 +32,25 @@ func NewFxPubSub(p FxPubSubParam) (*pubsub.Client, error) {
 	var client *pubsub.Client
 	var err error
 
+	// client
 	if p.Config.IsTestEnv() {
-		client, err = createTestClient(p)
+		client, err = createTestClient(p.Config.GetString("modules.pubsub.project.id"))
 	} else {
-		client, err = createClient(p)
+		client, err = createClient(p.Config.GetString("modules.pubsub.project.id"))
 	}
+
+	// lifecycle
+	p.LifeCycle.Append(fx.Hook{
+		OnStop: func(ctx context.Context) error {
+			return client.Close()
+		},
+	})
 
 	return client, err
 }
 
-func createClient(p FxPubSubParam) (*pubsub.Client, error) {
-	client, err := pubsub.NewClient(context.Background(), p.Config.GetString("modules.pubsub.project.id"))
+func createClient(projectId string) (*pubsub.Client, error) {
+	client, err := pubsub.NewClient(context.Background(), projectId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pubsub client: %w", err)
 	}
@@ -50,7 +58,7 @@ func createClient(p FxPubSubParam) (*pubsub.Client, error) {
 	return client, nil
 }
 
-func createTestClient(p FxPubSubParam) (*pubsub.Client, error) {
+func createTestClient(projectId string) (*pubsub.Client, error) {
 	srv := pstest.NewServer()
 
 	conn, err := grpc.Dial(srv.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -58,24 +66,10 @@ func createTestClient(p FxPubSubParam) (*pubsub.Client, error) {
 		return nil, err
 	}
 
-	client, err := pubsub.NewClient(
-		context.Background(),
-		p.Config.GetString("modules.pubsub.project.id"),
-		option.WithGRPCConn(conn),
-	)
+	client, err := pubsub.NewClient(context.Background(), projectId, option.WithGRPCConn(conn))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create fake pubsub client: %w", err)
+		return nil, fmt.Errorf("failed to create test pubsub client: %w", err)
 	}
-
-	/*	p.LifeCycle.Append(fx.Hook{
-		OnStop: func(ctx context.Context) error {
-						err = srv.Close()
-						err = conn.Close()
-						err = client.Close()
-
-			return nil
-		},
-	})*/
 
 	return client, nil
 }
