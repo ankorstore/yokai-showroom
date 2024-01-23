@@ -40,7 +40,7 @@ make fresh
 After a short moment, the application will offer:
 
 - [http://localhost:8080](http://localhost:8080): application dashboard
-- [http://localhost:8081](http://localhost:8081): application core dashboard
+- [http://localhost:8081](http://localhost:8081): core dashboard
 
 ### Available endpoints
 
