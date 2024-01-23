@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  http-demo-app:
+    container_name: http-demo-app
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+    networks:
+      - http-demo
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    expose:
+      - "8080"
+      - "8081"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  http-demo-database:
+    container_name: http-demo-database
+    image: mysql:8
+    restart: always
+    networks:
+      - http-demo
+    volumes:
+      - http-demo-database-data:/var/lib/mysql
+    env_file:
+      - .env
+
+volumes:
+  http-demo-database-data:
+    driver: local
+
+networks:
+  http-demo:
+    driver: bridge

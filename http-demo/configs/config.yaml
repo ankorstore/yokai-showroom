@@ -1,0 +1,64 @@
+app:
+  name: http-demo-app
+  version: 0.1.0
+modules:
+  core:
+    server:
+      port: 8081
+      metrics:
+        expose: true
+        collect:
+          enabled: true
+      healthcheck:
+        startup:
+          expose: true
+        readiness:
+          expose: true
+        liveness:
+          expose: true
+      debug:
+        config:
+          expose: true
+        pprof:
+          expose: true
+        routes:
+          expose: true
+        stats:
+          expose: true
+        build:
+          expose: true
+        modules:
+          expose: true
+  http:
+    server:
+      port: 8080
+      trace:
+        enabled: true
+      metrics:
+        collect:
+          enabled: true
+      templates:
+        enabled: true
+        path: templates/*.html
+  orm:
+    driver: mysql
+    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
+    log:
+      enabled: true
+      level: info
+      values: true
+    trace:
+      enabled: true
+      values: true
+  log:
+    level: debug
+  trace:
+    processor:
+      type: noop
+config:
+  dashboard:
+    title: Yokai HTTP demo
+  service:
+    gopher:
+      log: true
+      trace: true

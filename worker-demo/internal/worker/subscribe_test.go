@@ -61,8 +61,8 @@ func TestSubscribeWorker(t *testing.T) {
 	// metrics assertion
 	expectedMetric := `
 		# HELP worker_demo_app_messages_received_total Total number of received messages
-        # TYPE worker_demo_app_messages_received_total counter
-        worker_demo_app_messages_received_total 1
+		# TYPE worker_demo_app_messages_received_total counter
+		worker_demo_app_messages_received_total 1
 	`
 
 	err = testutil.GatherAndCompare(

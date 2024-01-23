@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <link rel="icon" href="https://ankorstore.com/favicon.svg" sizes="any" type="image/svg+xml">
+        <title>Fx HTTP API Demo</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/svg+xml" sizes="any" href="https://ankorstore.com/favicon.svg">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="alert alert-primary d-flex justify-content-between">
+                <h4 class="mb-0">
+                    <i class="bi bi-box"></i>&nbsp;&nbsp;{{index . "title"}}
+                </h4>
+                <strong>
+                    <i class="bi bi-github"></i> <a href="https://github.com/ankorstore/yokai-showroom/tree/main/http-demo" target="_blank">GitHub</a>
+                </strong>
+            </div>
+
+            <br/>
+            <div class="row">
+                <div class="col col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-card-list"></i>&nbsp;&nbsp;Gophers endpoints
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="float-start">
+                                    <span class="badge bg-primary">[GET] /gophers</span>
+                                </div>
+                                <div class="float-end">
+                                    List all gophers
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="float-start">
+                                    <span class="badge bg-success">[POST] /gophers</span>
+                                </div>
+                                <div class="float-end">
+                                    Create a gopher
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="float-start">
+                                    <span class="badge bg-primary">[GET] /gophers/:id</span>
+                                </div>
+                                <div class="float-end">
+                                    Get a gopher
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="float-start">
+                                    <span class="badge bg-secondary">[PATCH] /gophers/:id</span>
+                                </div>
+                                <div class="float-end">
+                                    Update a gopher
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="float-start">
+                                    <span class="badge bg-danger">[DELETE] /gophers/:id</span>
+                                </div>
+                                <div class="float-end">
+                                    Delete a gopher
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

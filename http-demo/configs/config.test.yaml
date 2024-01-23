@@ -1,0 +1,14 @@
+app:
+  debug: true
+modules:
+  orm:
+    driver: sqlite
+    dsn: ":memory:"
+  log:
+    output: test
+  trace:
+    processor:
+      type: test
+config:
+  dashboard:
+    title: test dashboard title

@@ -23,12 +23,12 @@
 
 This demo provides:
 
-- a demo [Yokai](https://github.com/ankorstore/yokai) application, with:
+- a demo [Yokai](https://github.com/ankorstore/yokai) application container, with:
 	- the [fxhttpserver](https://github.com/ankorstore/yokai/tree/main/fxhttpserver) module to offer a Pub/Sub
 	  publication endpoint
 	- the [fxworker](https://github.com/ankorstore/yokai/tree/main/fxworker) module to offer a worker running a Pub/Sub
 	  subscriber
-- a [Pub/Sub](https://cloud.google.com/pubsub) emulator
+- a [Pub/Sub](https://cloud.google.com/pubsub) emulator container
 
 See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
 
