@@ -10,35 +10,40 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// SubscribeCounter is a metrics counter for received messages.
 var SubscribeCounter = prometheus.NewCounter(prometheus.CounterOpts{
 	Name: "worker_demo_app_messages_received_total",
 	Help: "Total number of received messages",
 })
 
+// Subscriber is the interface for subscribers.
 type Subscriber interface {
 	Subscribe(ctx context.Context) error
 }
 
-type PubSubSubscriber struct {
+// DefaultSubscriber is the default [Subscriber] implementation.
+type DefaultSubscriber struct {
 	config *config.Config
 	client *pubsub.Client
 }
 
-func NewPubSubSubscriber(config *config.Config, client *pubsub.Client) *PubSubSubscriber {
-	return &PubSubSubscriber{
+// NewDefaultSubscriber creates a new [DefaultSubscriber].
+func NewDefaultSubscriber(config *config.Config, client *pubsub.Client) *DefaultSubscriber {
+	return &DefaultSubscriber{
 		config: config,
 		client: client,
 	}
 }
 
-func (s *PubSubSubscriber) Subscribe(ctx context.Context) error {
+// Subscribe handles messages subscription.
+func (s *DefaultSubscriber) Subscribe(ctx context.Context) error {
 	subscription, err := s.subscription(ctx)
 	if err != nil {
 		return err
 	}
 
-	return subscription.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		log.CtxLogger(ctx).Info().Msgf("received new message, data: %v", string(msg.Data))
+	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
+		log.CtxLogger(c).Info().Msgf("received new message: %v", string(msg.Data))
 
 		msg.Ack()
 
@@ -46,7 +51,7 @@ func (s *PubSubSubscriber) Subscribe(ctx context.Context) error {
 	})
 }
 
-func (s *PubSubSubscriber) subscription(ctx context.Context) (*pubsub.Subscription, error) {
+func (s *DefaultSubscriber) subscription(ctx context.Context) (*pubsub.Subscription, error) {
 	logger := log.CtxLogger(ctx)
 
 	pubSubTopicName := s.config.GetString("modules.pubsub.topics.test")
@@ -93,6 +98,7 @@ func (s *PubSubSubscriber) subscription(ctx context.Context) (*pubsub.Subscripti
 		)
 		if err != nil {
 			logger.Error().Err(err).Msgf("cannot create subscription %s", pubSubSubscriptionName)
+
 			return nil, err
 		}
 	}

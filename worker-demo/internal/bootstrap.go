@@ -37,6 +37,7 @@ func RunTest(tb testing.TB, options ...fx.Option) {
 	tb.Helper()
 
 	tb.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", RootDir))
+	tb.Setenv("PUBSUB_PROJECT_ID", "worker-demo-project")
 
 	Bootstrapper.RunTestApp(tb, fx.Options(options...))
 }
