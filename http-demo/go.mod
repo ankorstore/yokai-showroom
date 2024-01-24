@@ -4,9 +4,10 @@ go 1.20
 
 require (
 	github.com/ankorstore/yokai/config v1.1.0
-	github.com/ankorstore/yokai/fxcore v1.1.0
+	github.com/ankorstore/yokai/fxcore v1.3.0
 	github.com/ankorstore/yokai/fxhealthcheck v1.0.0
 	github.com/ankorstore/yokai/fxhttpserver v1.0.0
+	github.com/ankorstore/yokai/fxmetrics v1.0.0
 	github.com/ankorstore/yokai/fxorm v1.0.0
 	github.com/ankorstore/yokai/log v1.0.0
 	github.com/ankorstore/yokai/orm v1.0.0
@@ -24,7 +25,6 @@ require (
 	github.com/ankorstore/yokai/fxconfig v1.0.0 // indirect
 	github.com/ankorstore/yokai/fxgenerate v1.0.0 // indirect
 	github.com/ankorstore/yokai/fxlog v1.0.0 // indirect
-	github.com/ankorstore/yokai/fxmetrics v1.0.0 // indirect
 	github.com/ankorstore/yokai/fxtrace v1.1.0 // indirect
 	github.com/ankorstore/yokai/generate v1.0.0 // indirect
 	github.com/ankorstore/yokai/healthcheck v1.0.0 // indirect

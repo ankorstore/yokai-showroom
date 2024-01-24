@@ -5,6 +5,16 @@ modules:
   core:
     server:
       port: 8081
+      dashboard:
+        enabled: true
+        overview:
+          app_env: true
+          app_debug: true
+          app_version: true
+          log_level: true
+          log_output: true
+          trace_sampler: true
+          trace_processor: true
       metrics:
         expose: true
         collect:

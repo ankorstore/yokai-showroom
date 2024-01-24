@@ -5,7 +5,7 @@ go 1.20
 require (
 	cloud.google.com/go/pubsub v1.33.0
 	github.com/ankorstore/yokai/config v1.1.0
-	github.com/ankorstore/yokai/fxcore v1.1.0
+	github.com/ankorstore/yokai/fxcore v1.3.0
 	github.com/ankorstore/yokai/fxhttpserver v1.0.0
 	github.com/ankorstore/yokai/fxmetrics v1.0.0
 	github.com/ankorstore/yokai/fxworker v1.0.0
@@ -15,6 +15,7 @@ require (
 	github.com/prometheus/client_golang v1.18.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
+	go.opentelemetry.io/otel v1.17.0
 	go.uber.org/fx v1.20.1
 	google.golang.org/api v0.153.0
 	google.golang.org/grpc v1.59.0
@@ -79,7 +80,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.16.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.16.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.16.0 // indirect

@@ -49,8 +49,8 @@ github.com/ankorstore/yokai/config v1.1.0 h1:z6xnsVXAbWhhjcb5kqVaw0VlaGZziGc7Di1
 github.com/ankorstore/yokai/config v1.1.0/go.mod h1:yDANaMWIOfAUkAMClG22Q4bzQk91NLwWK3WbL5IFnbg=
 github.com/ankorstore/yokai/fxconfig v1.0.0 h1:zaYOLfpurqFJuS/IHeAXPOzrCNuttsFjJWNOK39opR4=
 github.com/ankorstore/yokai/fxconfig v1.0.0/go.mod h1:p+x6Jp8aLv1+uE1qO42KF+yahBK+VJdPP1/YReBjJ7M=
-github.com/ankorstore/yokai/fxcore v1.1.0 h1:n/jHFJ8SrmxplqHVhlD8Wo4AF3wBvKXeWPO9YBO2dig=
-github.com/ankorstore/yokai/fxcore v1.1.0/go.mod h1:9mAWDiDZFq/Mt7NWt5xIpj7ZO9xqUSjRQ8M6YPU3vug=
+github.com/ankorstore/yokai/fxcore v1.3.0 h1:X2BW4sXN3UgR7IdJ5c5Pg4U082bYAxQFzqmTN/SXxMk=
+github.com/ankorstore/yokai/fxcore v1.3.0/go.mod h1:9mAWDiDZFq/Mt7NWt5xIpj7ZO9xqUSjRQ8M6YPU3vug=
 github.com/ankorstore/yokai/fxgenerate v1.0.0 h1:jLe6FVnUqTkHZINK/LmjoD3C+CaZuNlMlQ/JJp0T1Cg=
 github.com/ankorstore/yokai/fxgenerate v1.0.0/go.mod h1:o6ICl0t3DRC3xUUm/z11EIA53BA8dHwZkJJaMVMgnGk=
 github.com/ankorstore/yokai/fxhealthcheck v1.0.0 h1:NbH1QDj8JflsHV9tbLqZVU5vXvbEiFftzBa755o6hCg=
