@@ -31,11 +31,9 @@ var migrateCmd = &cobra.Command{
 				err := db.AutoMigrate(&model.Gopher{})
 				if err != nil {
 					logger.Error().Err(err).Msg("error during ORM auto migration")
-
-					return err
+				} else {
+					logger.Info().Msg("ORM auto migration success")
 				}
-
-				logger.Info().Msg("ORM auto migration success")
 
 				return sd.Shutdown()
 			}),
