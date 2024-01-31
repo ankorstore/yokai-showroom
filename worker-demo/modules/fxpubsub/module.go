@@ -19,6 +19,10 @@ var FxPubSubModule = fx.Module(
 	ModuleName,
 	fx.Provide(
 		NewFxPubSub,
+		fx.Annotate(
+			NewFxPubSubMessageChannel,
+			fx.ResultTags(`name:"pub-sub-message-channel"`),
+		),
 	),
 )
 
@@ -26,6 +30,10 @@ type FxPubSubParam struct {
 	fx.In
 	LifeCycle fx.Lifecycle
 	Config    *config.Config
+}
+
+func NewFxPubSubMessageChannel() chan string {
+	return make(chan string)
 }
 
 func NewFxPubSub(p FxPubSubParam) (*pubsub.Client, error) {

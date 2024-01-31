@@ -5,19 +5,24 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ankorstore/yokai-showroom/worker-demo/internal/service"
 	"github.com/labstack/echo/v4"
+	"go.uber.org/fx"
 )
 
 // PublishHandler is the http handler for [GET] /publish.
 type PublishHandler struct {
-	publisher service.Publisher
+	messageChannel chan string
+}
+
+type PublishHandlerParam struct {
+	fx.In
+	MessageChannel chan string `name:"pub-sub-message-channel"`
 }
 
 // NewPublishHandler returns a new PublishHandler.
-func NewPublishHandler(publisher service.Publisher) *PublishHandler {
+func NewPublishHandler(p PublishHandlerParam) *PublishHandler {
 	return &PublishHandler{
-		publisher: publisher,
+		messageChannel: p.MessageChannel,
 	}
 }
 
@@ -31,17 +36,8 @@ func (h *PublishHandler) Handle() echo.HandlerFunc {
 			message = messageParam
 		}
 
-		err := h.publisher.Publish(c.Request().Context(), message)
-		if err != nil {
-			return c.String(
-				http.StatusInternalServerError,
-				fmt.Sprintf("publication of message %s failure: %s.", message, err.Error()),
-			)
-		}
+		h.messageChannel <- message
 
-		return c.String(
-			http.StatusOK,
-			fmt.Sprintf("publication of message %s success.", message),
-		)
+		return c.String(http.StatusAccepted, fmt.Sprintf("publication of message %s success.", message))
 	}
 }

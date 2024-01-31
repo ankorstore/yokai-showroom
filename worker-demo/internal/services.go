@@ -24,6 +24,8 @@ func ProvideServices() fx.Option {
 				fx.As(new(service.Subscriber)),
 			),
 		),
+		// publisher worker
+		fxworker.AsWorker(worker.NewPublishWorker),
 		// subscriber worker
 		fxworker.AsWorker(worker.NewSubscribeWorker),
 		// metrics
