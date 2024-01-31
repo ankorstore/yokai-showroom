@@ -6,6 +6,7 @@ services:
     build:
       dockerfile: dev.Dockerfile
       context: .
+    command: ["run"]
     networks:
       - http-demo
     ports:
@@ -19,12 +20,36 @@ services:
     env_file:
       - .env
 
+  http-demo-migration:
+    container_name: http-demo-migration
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+    command: ["migrate"]
+    depends_on:
+      http-demo-database:
+        condition: service_healthy
+    networks:
+      - http-demo
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
   http-demo-database:
     container_name: http-demo-database
     image: mysql:8
     restart: always
     networks:
       - http-demo
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
     volumes:
       - http-demo-database-data:/var/lib/mysql
     env_file:

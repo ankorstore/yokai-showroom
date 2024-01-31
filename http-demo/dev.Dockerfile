@@ -4,4 +4,5 @@ RUN go install github.com/cosmtrek/air@v1.49.0
 
 WORKDIR /app
 
-CMD ["air", "-c", ".air.toml", "--", "run"]
+ENTRYPOINT ["air", "-c", ".air.toml", "--"]
+CMD ["run"]

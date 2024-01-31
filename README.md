@@ -15,7 +15,7 @@ See [Yokai documentation](https://ankorstore.github.io/yokai).
 
 ## Demo applications
 
-| Application                | Description                   |
-|----------------------------|-------------------------------|
-| [http-demo](http-demo)     | HTTP API demo application |
+| Application                | Description                     |
+|----------------------------|---------------------------------|
+| [http-demo](http-demo)     | HTTP API demo application       |
 | [worker-demo](worker-demo) | Pub/Sub worker demo application |

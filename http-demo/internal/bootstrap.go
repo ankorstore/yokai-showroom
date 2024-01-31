@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxhttpserver"
 	"github.com/ankorstore/yokai/fxorm"
@@ -29,10 +28,7 @@ func init() {
 }
 
 func Run(ctx context.Context) {
-	Bootstrapper.WithContext(ctx).RunApp(
-		// run orm migrations
-		fxorm.RunFxOrmAutoMigrate(&model.Gopher{}),
-	)
+	Bootstrapper.WithContext(ctx).RunApp()
 }
 
 func RunTest(tb testing.TB, options ...fx.Option) {
@@ -47,8 +43,6 @@ func RunTest(tb testing.TB, options ...fx.Option) {
 
 	Bootstrapper.RunTestApp(
 		tb,
-		// run orm migrations
-		fxorm.RunFxOrmAutoMigrate(&model.Gopher{}),
 		// apply per test options
 		fx.Options(options...),
 	)
