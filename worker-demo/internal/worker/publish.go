@@ -38,7 +38,7 @@ func (w *PublishWorker) Run(ctx context.Context) error {
 		logger.Info().Msgf("waiting before publishing message: %s", message)
 
 		// some sleep to have time to see processing delay in logs
-		time.Sleep(3 * time.Second)
+		time.Sleep(1 * time.Second)
 
 		logger.Info().Msgf("publishing message: %s", message)
 

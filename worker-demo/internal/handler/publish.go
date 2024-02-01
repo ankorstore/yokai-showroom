@@ -36,7 +36,9 @@ func (h *PublishHandler) Handle() echo.HandlerFunc {
 			message = messageParam
 		}
 
-		h.messageChannel <- message
+		go func() {
+			h.messageChannel <- message
+		}()
 
 		return c.String(http.StatusAccepted, fmt.Sprintf("publication of message %s success.", message))
 	}
