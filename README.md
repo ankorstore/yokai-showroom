@@ -6,7 +6,7 @@
 > Showroom for demo applications based on the [Yokai](https://github.com/ankorstore/yokai) framework.
 
 <p align="center">
-  <img src="docs/assets/images/yokai.png" width="350" height="350" />
+  <img src="docs/assets/images/yokai-bck.png" width="350" height="350" />
 </p>
 
 ## Documentation
@@ -15,7 +15,7 @@ See [Yokai documentation](https://ankorstore.github.io/yokai).
 
 ## Demo applications
 
-| Application                | Description                   |
-|----------------------------|-------------------------------|
-| [http-demo](http-demo)     | HTTP API demo application |
+| Application                | Description                     |
+|----------------------------|---------------------------------|
+| [http-demo](http-demo)     | HTTP API demo application       |
 | [worker-demo](worker-demo) | Pub/Sub worker demo application |

@@ -6,12 +6,9 @@ require (
 	cloud.google.com/go/pubsub v1.33.0
 	github.com/ankorstore/yokai/config v1.1.0
 	github.com/ankorstore/yokai/fxcore v1.1.0
-	github.com/ankorstore/yokai/fxhttpserver v1.0.0
 	github.com/ankorstore/yokai/fxmetrics v1.0.0
 	github.com/ankorstore/yokai/fxworker v1.0.0
 	github.com/ankorstore/yokai/log v1.0.0
-	github.com/ankorstore/yokai/trace v1.0.0
-	github.com/labstack/echo/v4 v4.11.1
 	github.com/prometheus/client_golang v1.18.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
@@ -33,6 +30,7 @@ require (
 	github.com/ankorstore/yokai/generate v1.0.0 // indirect
 	github.com/ankorstore/yokai/healthcheck v1.0.0 // indirect
 	github.com/ankorstore/yokai/httpserver v1.0.0 // indirect
+	github.com/ankorstore/yokai/trace v1.0.0 // indirect
 	github.com/ankorstore/yokai/worker v1.0.0 // indirect
 	github.com/arl/statsviz v0.6.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -55,6 +53,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/labstack/echo/v4 v4.11.1 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -74,7 +73,6 @@ require (
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.18.2 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect

@@ -55,8 +55,6 @@ github.com/ankorstore/yokai/fxgenerate v1.0.0 h1:jLe6FVnUqTkHZINK/LmjoD3C+CaZuNl
 github.com/ankorstore/yokai/fxgenerate v1.0.0/go.mod h1:o6ICl0t3DRC3xUUm/z11EIA53BA8dHwZkJJaMVMgnGk=
 github.com/ankorstore/yokai/fxhealthcheck v1.0.0 h1:NbH1QDj8JflsHV9tbLqZVU5vXvbEiFftzBa755o6hCg=
 github.com/ankorstore/yokai/fxhealthcheck v1.0.0/go.mod h1:jEQ3pSXoyZrEOIF7asfEgxmsRssHzwavT5now+yzmq4=
-github.com/ankorstore/yokai/fxhttpserver v1.0.0 h1:aIracIjxALL8J/MLQoULo8zOF50mE8vBss6goUB673w=
-github.com/ankorstore/yokai/fxhttpserver v1.0.0/go.mod h1:NFYlA1LPvu9BfryxZ1BzWzhp+LJh4ghSL/dAoE5aLLs=
 github.com/ankorstore/yokai/fxlog v1.0.0 h1:ujq/XxgCK0uwKCNSt86XEYR2vqYbXZX2/lA/pQHZX4A=
 github.com/ankorstore/yokai/fxlog v1.0.0/go.mod h1:juQnBYNddDVOa7Ukhw8axLYWyibDDMJAwG7MDpluKnk=
 github.com/ankorstore/yokai/fxmetrics v1.0.0 h1:jA1MnIRzRqBk4JsdCcQxPZ6Jvmpd+uyoBwO7c0vUCMc=

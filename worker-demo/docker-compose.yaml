@@ -21,17 +21,30 @@ services:
 
   worker-demo-pubsub:
     container_name: worker-demo-pubsub
-    image: gcr.io/google.com/cloudsdktool/cloud-sdk:460.0.0-emulators
-    command: "gcloud beta emulators pubsub start --host-port=0.0.0.0:8085"
-    restart: always
+    image: messagebird/gcloud-pubsub-emulator:latest
     networks:
       - worker-demo
     ports:
-      - "8085:8085"
-    expose:
-      - "8085"
+      - "8681:8681"
     env_file:
       - .env
+    environment:
+      - PUBSUB_PROJECT1=${PUBSUB_PROJECT_ID:-demo-project},${PUBSUB_TOPIC_ID:-demo-topic}:${PUBSUB_SUBSCRIPTION_ID:-demo-subscription}
+
+  worker-demo-pubsub-ui:
+    container_name: worker-demo-pubsub-ui
+    image: echocode/gcp-pubsub-emulator-ui:latest
+    networks:
+      - worker-demo
+    ports:
+      - "8680:8680"
+    expose:
+      - "8680"
+    env_file:
+      - .env
+    environment:
+      - PUBSUB_EMULATOR_HOST=${PUBSUB_EMULATOR_HOST:-worker-demo-pubsub:8681}
+      - GCP_PROJECT_IDS=${PUBSUB_PROJECT_ID:-demo-project}
 
 networks:
   worker-demo:

@@ -43,14 +43,10 @@ modules:
     processor:
       type: noop
   pubsub:
-    project:
-      id: ${PUBSUB_PROJECT_ID}
-    emulator:
-      host: ${PUBSUB_EMULATOR_HOST}
-    topics:
-      test: test-topic
-    subscriptions:
-      test: test-topic-sub
+    project: ${PUBSUB_PROJECT_ID}
+    topic: ${PUBSUB_TOPIC_ID}
+    subscription: ${PUBSUB_SUBSCRIPTION_ID}
+    emulator: ${PUBSUB_EMULATOR_HOST}
   worker:
     metrics:
       collect:

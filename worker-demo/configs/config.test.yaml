@@ -6,3 +6,7 @@ modules:
   trace:
     processor:
       type: test
+  pubsub:
+    project: test-project
+    topic: test-topic
+    subscription: test-subscription

@@ -15,7 +15,7 @@ import (
 var RootDir string
 
 var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
-	// modules
+	// module
 	fxhttpserver.FxHttpServerModule,
 	fxorm.FxOrmModule,
 	// routing
