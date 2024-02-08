@@ -9,11 +9,12 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal"
-	config2 "github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log/logtest"
+	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
+	"go.opentelemetry.io/otel/attribute"
 	"go.uber.org/fx"
 )
 
@@ -25,18 +26,18 @@ func TestSubscribeWorker(t *testing.T) {
 	// env vars
 	t.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", internal.RootDir))
 
-	var config *config2.Config
 	var client *pubsub.Client
 	var logBuffer logtest.TestLogBuffer
+	var traceExporter tracetest.TestTraceExporter
 	var metricsRegistry *prometheus.Registry
 
 	// bootstrap test app
 	app := internal.Bootstrapper.BootstrapTestApp(
 		t,
 		fx.Populate(
-			&config,
 			&client,
 			&logBuffer,
+			&traceExporter,
 			&metricsRegistry,
 		),
 	)
@@ -65,6 +66,14 @@ func TestSubscribeWorker(t *testing.T) {
 		"worker":  "subscribe-worker",
 		"message": fmt.Sprintf("received message: id=%v, data=%s", id, testMessage),
 	})
+
+	// trace assertion
+	tracetest.AssertHasTraceSpan(
+		t,
+		traceExporter,
+		"subscribe-worker span",
+		attribute.String("Worker", "subscribe-worker"),
+	)
 
 	// metrics assertion
 	expectedMetric := `

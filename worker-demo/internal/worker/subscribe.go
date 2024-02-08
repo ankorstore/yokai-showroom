@@ -2,10 +2,12 @@ package worker
 
 import (
 	"context"
+	"fmt"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log"
+	"github.com/ankorstore/yokai/trace"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -39,6 +41,9 @@ func (w *SubscribeWorker) Run(ctx context.Context) error {
 	subscription := w.client.Subscription(w.config.GetString("modules.pubsub.subscription"))
 
 	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
+		c, span := trace.CtxTracerProvider(c).Tracer(w.Name()).Start(c, fmt.Sprintf("%s span", w.Name()))
+		defer span.End()
+
 		log.CtxLogger(c).Info().Msgf(
 			"received message: id=%v, data=%v",
 			msg.ID,
