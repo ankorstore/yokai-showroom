@@ -1,0 +1,62 @@
+app:
+  name: grpc-app
+  version: 0.1.0
+modules:
+  core:
+    server:
+      port: 8081
+      dashboard:
+        enabled: true
+        overview:
+          app_env: true
+          app_debug: true
+          app_version: true
+          log_level: true
+          log_output: true
+          trace_sampler: true
+          trace_processor: true
+      metrics:
+        expose: true
+        collect:
+          enabled: true
+      healthcheck:
+        startup:
+          expose: true
+        readiness:
+          expose: true
+        liveness:
+          expose: true
+      debug:
+        config:
+          expose: true
+        pprof:
+          expose: true
+        routes:
+          expose: true
+        stats:
+          expose: true
+        build:
+          expose: true
+        modules:
+          expose: true
+  grpc:
+    server:
+      port: 50051
+      reflection:
+        enabled: true
+      trace:
+        enabled: true
+      healthcheck:
+        enabled: true
+      metrics:
+        collect:
+          enabled: true
+  log:
+    level: info
+    output: stdout
+  trace:
+    processor:
+      type: noop
+config:
+  example-worker:
+    interval: 3
