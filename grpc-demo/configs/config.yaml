@@ -19,6 +19,9 @@ modules:
         expose: true
         collect:
           enabled: true
+        normalize:
+          request_path: true
+          response_status: true
       healthcheck:
         startup:
           expose: true
@@ -58,5 +61,6 @@ modules:
     processor:
       type: noop
 config:
-  example-worker:
-    interval: 3
+  authentication:
+    enabled: true
+    secret: super-secret
