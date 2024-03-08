@@ -8,5 +8,6 @@ modules:
     processor:
       type: test
 config:
-  example-worker:
-    interval: 1
+  authentication:
+    enabled: ${AUTH_ENABLED}
+    secret: ${AUTH_SECRET}

@@ -62,5 +62,5 @@ modules:
       type: noop
 config:
   authentication:
-    enabled: true
+    enabled: false
     secret: super-secret

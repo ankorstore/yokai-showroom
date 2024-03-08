@@ -3,12 +3,25 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 
 	"github.com/ankorstore/yokai-showroom/grpc-demo/proto"
 	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log"
+	"github.com/ankorstore/yokai/trace"
+	"github.com/prometheus/client_golang/prometheus"
+)
+
+var TransformerCounter = prometheus.NewCounterVec(
+	prometheus.CounterOpts{
+		Name: "transformer_total",
+		Help: "Total of TransformTextService transformer usage",
+	},
+	[]string{
+		"transformer",
+	},
 )
 
 type TransformTextServiceService struct {
@@ -23,9 +36,12 @@ func NewTransformTextServiceService(cfg *config.Config) *TransformTextServiceSer
 }
 
 func (s *TransformTextServiceService) TransformText(ctx context.Context, in *proto.TransformTextRequest) (*proto.TransformTextResponse, error) {
+	ctx, span := trace.CtxTracerProvider(ctx).Tracer("TransformTextService").Start(ctx, "TransformText")
+	defer span.End()
+
 	transformedText := s.transform(in)
 
-	log.CtxLogger(ctx).Debug().Msgf("TransformText: %s -> %s", in.Text, transformedText)
+	log.CtxLogger(ctx).Info().Msgf("TransformText: %s -> %s", in.Text, transformedText)
 
 	return &proto.TransformTextResponse{
 		Text: transformedText,
@@ -33,13 +49,18 @@ func (s *TransformTextServiceService) TransformText(ctx context.Context, in *pro
 }
 
 func (s *TransformTextServiceService) TransformAndSplitText(stream proto.TransformTextService_TransformAndSplitTextServer) error {
-	logger := log.CtxLogger(stream.Context())
+	ctx := stream.Context()
+
+	ctx, span := trace.CtxTracerProvider(ctx).Tracer("TransformTextService").Start(ctx, "TransformAndSplitText")
+	defer span.End()
+
+	logger := log.CtxLogger(ctx)
 
 	for {
 		req, err := stream.Recv()
 
 		if errors.Is(err, io.EOF) {
-			logger.Debug().Msg("TransformTextAndSplit: end of rpc")
+			logger.Info().Msg("TransformTextAndSplit: end of rpc")
 
 			return nil
 		}
@@ -48,7 +69,7 @@ func (s *TransformTextServiceService) TransformAndSplitText(stream proto.Transfo
 			logger.Error().Err(err).Msgf("TransformTextAndSplit: error while receiving: %v", err)
 		}
 
-		logger.Debug().Msgf("TransformTextAndSplit: -> %s", req.Text)
+		logger.Info().Msgf("TransformTextAndSplit: -> %s", req.Text)
 
 		split := strings.Split(s.transform(req), " ")
 
@@ -63,18 +84,27 @@ func (s *TransformTextServiceService) TransformAndSplitText(stream proto.Transfo
 				return err
 			}
 
-			logger.Debug().Msgf("TransformTextAndSplit: <- %s", word)
+			span.AddEvent(fmt.Sprintf("send word: %s", word))
+
+			logger.Info().Msgf("TransformTextAndSplit: <- %s", word)
 		}
 	}
 }
 
+//nolint:exhaustive
 func (s *TransformTextServiceService) transform(in *proto.TransformTextRequest) string {
 	switch in.Transformer {
 	case proto.Transformer_TRANSFORMER_UPPERCASE:
+		TransformerCounter.WithLabelValues("uppercase").Inc()
+
 		return strings.ToUpper(in.Text)
 	case proto.Transformer_TRANSFORMER_LOWERCASE:
+		TransformerCounter.WithLabelValues("lowercase").Inc()
+
 		return strings.ToLower(in.Text)
 	default:
+		TransformerCounter.WithLabelValues("unspecified").Inc()
+
 		return in.Text
 	}
 }
