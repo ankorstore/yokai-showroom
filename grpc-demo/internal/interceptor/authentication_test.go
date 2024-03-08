@@ -63,8 +63,7 @@ func TestAuthenticationUnaryInterceptor(t *testing.T) {
 	for tName, tData := range testCases {
 		t.Run(tName, func(t *testing.T) {
 			_, got := client.TransformText(tData.ctx, &proto.TransformTextRequest{
-				Transformer: proto.Transformer_TRANSFORMER_UPPERCASE,
-				Text:        "test",
+				Text: "test",
 			})
 			assert.Equal(t, tData.want, got)
 		})

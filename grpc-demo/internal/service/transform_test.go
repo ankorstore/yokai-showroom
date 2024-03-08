@@ -56,16 +56,16 @@ func TestTransformText(t *testing.T) {
 	// response assertions
 	assert.Equal(t, "TEST", response.Text)
 
-	// log assertion
+	// logs assertions
 	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 		"level":   "info",
 		"message": "TransformText: test -> TEST",
 	})
 
-	// trace assertion
+	// traces assertions
 	tracetest.AssertHasTraceSpan(t, traceExporter, "TransformText")
 
-	// metrics assertion
+	// metrics assertions
 	expectedMetric := `
 		# HELP transformer_total Total of TransformTextService transformer usage
 		# TYPE transformer_total counter
@@ -139,13 +139,14 @@ func TestTransformAndSplitText(t *testing.T) {
 
 	<-wait
 
+	// responses assertions
 	assert.Len(t, responses, 4)
 	assert.Equal(t, "this", responses[0].Text)
 	assert.Equal(t, "is", responses[1].Text)
 	assert.Equal(t, "a", responses[2].Text)
 	assert.Equal(t, "test", responses[3].Text)
 
-	// logs assertion
+	// logs assertions
 	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 		"level":   "info",
 		"message": "TransformTextAndSplit: -> THIS IS A TEST",
@@ -171,7 +172,7 @@ func TestTransformAndSplitText(t *testing.T) {
 		"message": "TransformTextAndSplit: <- test",
 	})
 
-	// trace assertion
+	// traces assertions
 	tracetest.AssertHasTraceSpan(t, traceExporter, "TransformAndSplitText")
 
 	span, err := traceExporter.Span("TransformAndSplitText")
@@ -182,7 +183,7 @@ func TestTransformAndSplitText(t *testing.T) {
 	assert.Equal(t, "send word: a", span.Events[2].Name)
 	assert.Equal(t, "send word: test", span.Events[3].Name)
 
-	// metrics assertion
+	// metrics assertions
 	expectedMetric := `
 		# HELP transformer_total Total of TransformTextService transformer usage
 		# TYPE transformer_total counter
