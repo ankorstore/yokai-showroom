@@ -58,7 +58,7 @@ This demo application provides example [authentication interceptors](internal/in
 
 You can enable authentication in the application [configuration file](configs/config.yaml) with `config.authentication.enabled=true`.
 
-If enabled, you need to provide the secret configured in `config.authentication.secret` as request `authorization` metadata.
+If enabled, you need to provide the secret configured in `config.authentication.secret` as context `authorization` metadata.
 
 ### Examples
 
