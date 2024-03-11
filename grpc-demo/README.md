@@ -11,6 +11,7 @@
 * [Usage](#usage)
   * [Start the application](#start-the-application)
   * [Available services](#available-services)
+  * [Authentication](#authentication)
   * [Examples](#examples)
 * [Contents](#contents)
   * [Layout](#layout)
@@ -50,6 +51,14 @@ This demo application provides a [TransformTextService](proto/transform.proto), 
 | `TransformAndSplitText` | streaming | Transforms and splits a given text using a given transformer |
 
 This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check ](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
+
+### Authentication
+
+This demo application provides example [authentication interceptors](internal/interceptor/authentication.go).
+
+You can enable authentication in the application [configuration file](configs/config.yaml) with `config.authentication.enabled=true`.
+
+If enabled, you need to provide the secret configured in `config.authentication.secret` as request `authorization` metadata.
 
 ### Examples
 

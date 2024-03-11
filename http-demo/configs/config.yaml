@@ -5,10 +5,23 @@ modules:
   core:
     server:
       port: 8081
+      dashboard:
+        enabled: true
+        overview:
+          app_env: true
+          app_debug: true
+          app_version: true
+          log_level: true
+          log_output: true
+          trace_sampler: true
+          trace_processor: true
       metrics:
         expose: true
         collect:
           enabled: true
+        normalize:
+          request_path: true
+          response_status: true
       healthcheck:
         startup:
           expose: true
@@ -37,6 +50,9 @@ modules:
       metrics:
         collect:
           enabled: true
+        normalize:
+          request_path: true
+          response_status: true
       templates:
         enabled: true
         path: templates/*.html
@@ -56,6 +72,9 @@ modules:
     processor:
       type: noop
 config:
+  authentication:
+    enabled: false
+    secret: super-secret
   dashboard:
     title: Yokai HTTP demo
   service:

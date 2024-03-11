@@ -3,14 +3,18 @@ package internal
 import (
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/handler"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/handler/gopher"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/middleware"
 	"github.com/ankorstore/yokai/fxhttpserver"
 	"go.uber.org/fx"
 )
 
 func ProvideRouting() fx.Option {
 	return fx.Options(
+		// authentication middleware
+		fxhttpserver.AsMiddleware(middleware.NewAuthenticationMiddleware, fxhttpserver.GlobalUse),
+		// dashboard handler
 		fxhttpserver.AsHandler("GET", "", handler.NewDashboardHandler),
-		// gophers CRUD
+		// gophers CRUD handlers group
 		fxhttpserver.AsHandlersGroup(
 			"/gophers",
 			[]*fxhttpserver.HandlerRegistration{

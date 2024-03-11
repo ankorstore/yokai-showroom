@@ -21,5 +21,5 @@ func TestDashboardHandler(t *testing.T) {
 	httpServer.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Contains(t, rec.Body.String(), "test dashboard title")
+	assert.Contains(t, rec.Body.String(), "Test dashboard title")
 }

@@ -10,5 +10,8 @@ modules:
     processor:
       type: test
 config:
+  authentication:
+    enabled: ${AUTH_ENABLED}
+    secret: ${AUTH_SECRET}
   dashboard:
-    title: test dashboard title
+    title: Test dashboard title

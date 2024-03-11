@@ -1,5 +1,5 @@
 app:
-  name: grpc-app
+  name: grpc-demo-app
   version: 0.1.0
 modules:
   core:

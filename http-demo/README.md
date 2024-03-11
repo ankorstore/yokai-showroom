@@ -11,6 +11,7 @@
 * [Usage](#usage)
   * [Start the application](#start-the-application)
   * [Available endpoints](#available-endpoints)
+  * [Authentication](#authentication)
 * [Contents](#contents)
   * [Layout](#layout)
   * [Makefile](#makefile)
@@ -53,6 +54,14 @@ After a short moment, the application will offer:
 | `[PATCH] /gophers/:id`  | Update a gopher  | REST     |
 | `[DELETE] /gophers/:id` | Delete a gopher  | REST     |
 
+### Authentication
+
+This demo application provides an example [authentication middleware](internal/middleware/authentication.go).
+
+You can enable authentication in the application [configuration file](configs/config.yaml) with `config.authentication.enabled=true`.
+
+If enabled, you need to provide the secret configured in `config.authentication.secret` as request `Authorization` header.
+
 ## Contents
 
 ### Layout
@@ -63,6 +72,7 @@ This template is following the [standard go project layout](https://github.com/g
 - `configs/`: configuration files
 - `internal/`:
   - `handler/`: HTTP handlers
+  - `middleware/`: HTTP middlewares
   - `model/`: models
   - `service/`: services
   - `bootstrap.go`: bootstrap (modules, lifecycles, etc)

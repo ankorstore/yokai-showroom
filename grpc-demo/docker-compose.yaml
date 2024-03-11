@@ -1,12 +1,13 @@
 version: '3.9'
 
 services:
-  grpc-app-server:
+  grpc-demo-app:
+    container_name: grpc-demo-app
     build:
       dockerfile: dev.Dockerfile
       context: .
     networks:
-      - grpc-app-network
+      - grpc-demo
     ports:
       - "50051:50051"
       - "8081:8081"
@@ -19,5 +20,5 @@ services:
       - .env
 
 networks:
-  grpc-app-network:
+  grpc-demo:
     driver: bridge

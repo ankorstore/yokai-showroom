@@ -18,6 +18,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 )
 
+//nolint:containedctx
 func TestAuthenticationUnaryInterceptor(t *testing.T) {
 	t.Setenv("AUTH_ENABLED", "true")
 	t.Setenv("AUTH_SECRET", "valid-secret")
@@ -70,6 +71,7 @@ func TestAuthenticationUnaryInterceptor(t *testing.T) {
 	}
 }
 
+//nolint:containedctx
 func TestAuthenticationStreamInterceptor(t *testing.T) {
 	t.Setenv("AUTH_ENABLED", "true")
 	t.Setenv("AUTH_SECRET", "valid-secret")
