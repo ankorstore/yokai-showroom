@@ -3,14 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Go version](https://img.shields.io/badge/Go-1.20-blue)](https://go.dev/)
 
-> gRPC REST API demo application, based on
+> gRPC API demo application, based on
 > the [Yokai](https://github.com/ankorstore/yokai) Go framework.
 
 <!-- TOC -->
 * [Overview](#overview)
 * [Usage](#usage)
   * [Start the application](#start-the-application)
-  * [Available endpoints](#available-endpoints)
+  * [Available services](#available-services)
+  * [Examples](#examples)
 * [Contents](#contents)
   * [Layout](#layout)
   * [Makefile](#makefile)
@@ -36,10 +37,10 @@ make fresh
 
 After a short moment, the application will offer:
 
-- localhost:50051: gRPC service
+- `localhost:50051`: application gRPC server
 - [http://localhost:8081](http://localhost:8081): application core dashboard
 
-### Available service
+### Available services
 
 This demo application provides a [TransformTextService](proto/transform.proto), with the following `RPCs`:
 
@@ -47,6 +48,35 @@ This demo application provides a [TransformTextService](proto/transform.proto), 
 |-------------------------|-----------|--------------------------------------------------------------|
 | `TransformText`         | unary     | Transforms a given text using a given transformer            |
 | `TransformAndSplitText` | streaming | Transforms and splits a given text using a given transformer |
+
+This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check ](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
+
+### Examples
+
+Usage examples with [grpcurl](https://github.com/fullstorydev/grpcurl):
+
+- with `TransformTextService/TransformText`:
+
+```shell
+grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' localhost:50051 transform.TransformTextService/TransformText
+{
+  "text": "ABC"
+}
+```
+
+- with `TransformTextService/TransformAndSplitText`:
+
+```shell
+grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}' localhost:50051 transform.TransformTextService/TransformAndSplitText
+{
+  "text": "abc"
+}
+{
+  "text": "def"
+}
+```
+
+You can use any gRPC clients, such as [Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/) or [Evans](https://github.com/ktr0731/evans).
 
 ## Contents
 
@@ -67,11 +97,11 @@ This demo application is following the [standard go project layout](https://gith
 This demo application provides a `Makefile`:
 
 ```
-make up     # start the docker compose stack
-make down   # stop the docker compose stack
-make logs   # stream the docker compose stack logs
-make fresh  # refresh the docker compose stack
-make proto  # generate gRPC stubs with protoc
-make test   # run tests
-make lint   # run linter
+make up        # start the docker compose stack
+make down      # stop the docker compose stack
+make logs      # stream the docker compose stack logs
+make fresh     # refresh the docker compose stack
+make protogen  # generate gRPC stubs with protoc
+make test      # run tests
+make lint      # run linter
 ```

@@ -12,10 +12,10 @@ import (
 // ProvideServices is used to register the application services.
 func ProvideServices() fx.Option {
 	return fx.Options(
-		// gRPC interceptors
+		// gRPC server interceptors
 		fxgrpcserver.AsGrpcServerUnaryInterceptor(interceptor.NewAuthenticationUnaryInterceptor),
 		fxgrpcserver.AsGrpcServerStreamInterceptor(interceptor.NewAuthenticationStreamInterceptor),
-		// gRPC service
+		// gRPC server service
 		fxgrpcserver.AsGrpcServerService(service.NewTransformTextServiceService, &proto.TransformTextService_ServiceDesc),
 		// metrics
 		fxmetrics.AsMetricsCollector(service.TransformerCounter),

@@ -44,7 +44,7 @@ func (i *AuthenticationUnaryInterceptor) HandleUnary() grpc.UnaryServerIntercept
 	}
 }
 
-// AuthenticationStreamInterceptor is an authentication unary interceptor.
+// AuthenticationStreamInterceptor is an authentication stream interceptor.
 type AuthenticationStreamInterceptor struct {
 	config *config.Config
 }

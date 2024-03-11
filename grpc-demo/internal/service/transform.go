@@ -14,6 +14,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// TransformerCounter is a metrics collector that counts each transformer usage.
 var TransformerCounter = prometheus.NewCounterVec(
 	prometheus.CounterOpts{
 		Name: "transformer_total",
@@ -24,17 +25,20 @@ var TransformerCounter = prometheus.NewCounterVec(
 	},
 )
 
+// TransformTextServiceService is the gRPC server service for TransformTextService.
 type TransformTextServiceService struct {
 	proto.UnimplementedTransformTextServiceServer
 	config *config.Config
 }
 
+// NewTransformTextServiceService returns a new [TransformTextServiceService] instance.
 func NewTransformTextServiceService(cfg *config.Config) *TransformTextServiceService {
 	return &TransformTextServiceService{
 		config: cfg,
 	}
 }
 
+// TransformText transforms the text provided in a [proto.TransformTextRequest] by applying the provided transformer.
 func (s *TransformTextServiceService) TransformText(ctx context.Context, in *proto.TransformTextRequest) (*proto.TransformTextResponse, error) {
 	ctx, span := trace.CtxTracerProvider(ctx).Tracer("TransformTextService").Start(ctx, "TransformText")
 	defer span.End()
@@ -48,6 +52,7 @@ func (s *TransformTextServiceService) TransformText(ctx context.Context, in *pro
 	}, nil
 }
 
+// TransformAndSplitText splits the text provided in a streamed [proto.TransformTextRequest] in words, and transform each word by applying the provided transformer.
 func (s *TransformTextServiceService) TransformAndSplitText(stream proto.TransformTextService_TransformAndSplitTextServer) error {
 	ctx := stream.Context()
 
