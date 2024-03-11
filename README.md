@@ -9,7 +9,13 @@
   <img src="docs/assets/images/yokai-bck.png" width="350" height="350" />
 </p>
 
+## Documentation
+
+For more information about the [Yokai](https://github.com/ankorstore/yokai) framework,  check the online [documentation](https://ankorstore.github.io/yokai).
+
 ## Demo applications
+
+You can find below the available [Yokai](https://github.com/ankorstore/yokai) demo applications:
 
 | Application                | Description             |
 |----------------------------|-------------------------|
@@ -17,6 +23,3 @@
 | [http-demo](http-demo)     | HTTP demo application   |
 | [worker-demo](worker-demo) | Worker demo application |
 
-## Documentation
-
-See [Yokai documentation](https://ankorstore.github.io/yokai).
