@@ -1,0 +1,13 @@
+app:
+  debug: false
+modules:
+  core:
+    server:
+      metrics:
+        collect:
+          enabled: false
+      debug:
+        pprof:
+          expose: false
+        stats:
+          expose: false

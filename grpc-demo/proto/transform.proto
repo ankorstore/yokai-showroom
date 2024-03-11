@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package transform;
+
+option go_package = "github.com/ankorstore/yokai-showroom/grpc-demo/proto";
+
+enum Transformer {
+  TRANSFORMER_UNSPECIFIED = 0;
+  TRANSFORMER_UPPERCASE = 1;
+  TRANSFORMER_LOWERCASE = 2;
+}
+
+message TransformTextRequest {
+  Transformer transformer = 1;
+  string text = 2;
+}
+
+message TransformTextResponse {
+  string text = 1;
+}
+
+service TransformTextService {
+  // Unary rpc
+  rpc TransformText(TransformTextRequest) returns (TransformTextResponse) {};
+  // BiDi rpc
+  rpc TransformAndSplitText(stream TransformTextRequest) returns (stream TransformTextResponse) {};
+}

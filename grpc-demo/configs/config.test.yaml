@@ -1,0 +1,13 @@
+app:
+  debug: true
+modules:
+  log:
+    level: debug
+    output: test
+  trace:
+    processor:
+      type: test
+config:
+  authentication:
+    enabled: ${AUTH_ENABLED}
+    secret: ${AUTH_SECRET}
