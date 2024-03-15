@@ -5,10 +5,23 @@ modules:
   core:
     server:
       port: 8081
+      dashboard:
+        enabled: true
+        overview:
+          app_env: true
+          app_debug: true
+          app_version: true
+          log_level: true
+          log_output: true
+          trace_sampler: true
+          trace_processor: true
       metrics:
         expose: true
         collect:
           enabled: true
+        normalize:
+          request_path: true
+          response_status: true
       healthcheck:
         startup:
           expose: true
@@ -42,12 +55,18 @@ modules:
   trace:
     processor:
       type: noop
-  pubsub:
-    project: ${PUBSUB_PROJECT_ID}
-    topic: ${PUBSUB_TOPIC_ID}
-    subscription: ${PUBSUB_SUBSCRIPTION_ID}
-    emulator: ${PUBSUB_EMULATOR_HOST}
   worker:
     metrics:
       collect:
         enabled: true
+  gcppubsub:
+    project:
+      id: demo-project
+    healthcheck:
+      subscriptions:
+        - demo-subscription
+config:
+  topic:
+    id: demo-topic
+  subscription:
+    id: demo-subscription

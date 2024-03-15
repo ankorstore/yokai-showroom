@@ -6,7 +6,11 @@ modules:
   trace:
     processor:
       type: test
-  pubsub:
-    project: test-project
-    topic: test-topic
-    subscription: test-subscription
+  gcppubsub:
+    project:
+      id: test-project
+config:
+  topic:
+    id: test-topic
+  subscription:
+    id: test-subscription

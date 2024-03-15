@@ -13,7 +13,7 @@ import (
 
 // SubscribeCounter is a metrics counter for received messages.
 var SubscribeCounter = prometheus.NewCounter(prometheus.CounterOpts{
-	Name: "messages_received_total",
+	Name: "subscriber_messages_received_total",
 	Help: "Total number of received messages",
 })
 
@@ -38,7 +38,7 @@ func (w *SubscribeWorker) Name() string {
 
 // Run executes the worker.
 func (w *SubscribeWorker) Run(ctx context.Context) error {
-	subscription := w.client.Subscription(w.config.GetString("modules.pubsub.subscription"))
+	subscription := w.client.Subscription(w.config.GetString("config.subscription.id"))
 
 	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
 		c, span := trace.CtxTracerProvider(c).Tracer(w.Name()).Start(c, fmt.Sprintf("%s span", w.Name()))

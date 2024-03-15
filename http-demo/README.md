@@ -1,7 +1,7 @@
 # Yokai HTTP Demo
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Go version](https://img.shields.io/badge/Go-≥1.20-blue)](https://go.dev/)
+[![Go version](https://img.shields.io/badge/Go-1.22-blue)](https://go.dev/)
 
 > HTTP REST API demo application, based on
 > the [Yokai](https://github.com/ankorstore/yokai) Go framework.
@@ -66,7 +66,7 @@ If enabled, you need to provide the secret configured in `config.authentication.
 
 ### Layout
 
-This template is following the [standard go project layout](https://github.com/golang-standards/project-layout):
+This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
 
 - `cmd/`: entry points
 - `configs/`: configuration files
@@ -81,7 +81,7 @@ This template is following the [standard go project layout](https://github.com/g
 
 ### Makefile
 
-This template provides a `Makefile`:
+This demo application provides a `Makefile`:
 
 ```
 make up     # start the docker compose stack

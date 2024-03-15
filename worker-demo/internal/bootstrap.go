@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/worker-demo/internal/module/fxpubsub"
+	"github.com/ankorstore/yokai-contrib/fxgcppubsub"
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxworker"
 	"go.uber.org/fx"
@@ -16,7 +16,7 @@ var RootDir string
 var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
 	// module
 	fxworker.FxWorkerModule,
-	fxpubsub.FxPubSubModule,
+	fxgcppubsub.FxGcpPubSubModule,
 	// services
 	ProvideServices(),
 )

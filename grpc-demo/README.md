@@ -1,7 +1,7 @@
 # Yokai gRPC Demo
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Go version](https://img.shields.io/badge/Go-≥1.20-blue)](https://go.dev/)
+[![Go version](https://img.shields.io/badge/Go-1.22-blue)](https://go.dev/)
 
 > gRPC API demo application, based on
 > the [Yokai](https://github.com/ankorstore/yokai) Go framework.
@@ -106,11 +106,11 @@ This demo application is following the [standard go project layout](https://gith
 This demo application provides a `Makefile`:
 
 ```
-make up        # start the docker compose stack
-make down      # stop the docker compose stack
-make logs      # stream the docker compose stack logs
-make fresh     # refresh the docker compose stack
-make protogen  # generate gRPC stubs with protoc
-make test      # run tests
-make lint      # run linter
+make up     # start the docker compose stack
+make down   # stop the docker compose stack
+make logs   # stream the docker compose stack logs
+make fresh  # refresh the docker compose stack
+make stubs  # generate gRPC stubs with protoc
+make test   # run tests
+make lint   # run linter
 ```

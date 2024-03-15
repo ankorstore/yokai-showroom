@@ -9,6 +9,7 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal"
+	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/prometheus/client_golang/prometheus"
@@ -21,8 +22,6 @@ import (
 func TestSubscribeWorker(t *testing.T) {
 	ctx := context.Background()
 
-	testMessage := "test message"
-
 	// env vars
 	t.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", internal.RootDir))
 
@@ -34,6 +33,27 @@ func TestSubscribeWorker(t *testing.T) {
 	// bootstrap test app
 	app := internal.Bootstrapper.BootstrapTestApp(
 		t,
+		fx.Invoke(func(config *config.Config, client *pubsub.Client) error {
+			// prepare test topic
+			topicName := config.GetString("config.topic.id")
+			subscriptionName := config.GetString("config.subscription.id")
+
+			topic, err := client.CreateTopic(ctx, topicName)
+			if err != nil {
+				return fmt.Errorf("cannot create test topic %s: %w", topicName, err)
+			}
+
+			// prepare test subscription
+			_, err = client.CreateSubscription(ctx, subscriptionName, pubsub.SubscriptionConfig{
+				Topic:       topic,
+				AckDeadline: 10 * time.Second,
+			})
+			if err != nil {
+				return fmt.Errorf("cannot create test subscription %s: %w", subscriptionName, err)
+			}
+
+			return nil
+		}),
 		fx.Populate(
 			&client,
 			&logBuffer,
@@ -46,6 +66,8 @@ func TestSubscribeWorker(t *testing.T) {
 	app.RequireStart()
 
 	// publish test message
+	testMessage := "test message"
+
 	result := client.Topic("test-topic").Publish(ctx, &pubsub.Message{
 		Data: []byte(testMessage),
 	})
@@ -53,8 +75,8 @@ func TestSubscribeWorker(t *testing.T) {
 	id, err := result.Get(ctx)
 	assert.NoError(t, err)
 
-	// stop test app (after 1 sec wait to avoid test flakiness)
-	time.Sleep(1 * time.Second)
+	// stop test app (after 100 ms wait to avoid test flakiness)
+	time.Sleep(100 * time.Millisecond)
 
 	app.RequireStop()
 
@@ -77,15 +99,15 @@ func TestSubscribeWorker(t *testing.T) {
 
 	// metrics assertion
 	expectedMetric := `
-		# HELP messages_received_total Total number of received messages
-		# TYPE messages_received_total counter
-		messages_received_total 1
+		# HELP subscriber_messages_received_total Total number of received messages
+		# TYPE subscriber_messages_received_total counter
+		subscriber_messages_received_total 1
 	`
 
 	err = testutil.GatherAndCompare(
 		metricsRegistry,
 		strings.NewReader(expectedMetric),
-		"messages_received_total",
+		"subscriber_messages_received_total",
 	)
 	assert.NoError(t, err)
 }
