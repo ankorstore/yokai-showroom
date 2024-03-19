@@ -25,8 +25,8 @@ github.com/ankorstore/yokai/fxhealthcheck v1.1.0 h1:E/ADes6EC49kPwQlOel5BUyWNv45
 github.com/ankorstore/yokai/fxhealthcheck v1.1.0/go.mod h1:j8ki4ZHL/G5zaD3GwVX3j5/xFyuQNNvsZPnoSG7E/AY=
 github.com/ankorstore/yokai/fxlog v1.1.0 h1:vLI8Qd9KfCzAH9IvzGJTvFYmlE1jtMnjvA4z/vxJpYg=
 github.com/ankorstore/yokai/fxlog v1.1.0/go.mod h1:VHlj/FNGAuLNqTyRCCx3iGUi9IZXv7qVNrDLUQng1cE=
-github.com/ankorstore/yokai/fxmetrics v1.1.0 h1:S0bLCwO37oiDG+5kQFGYt2g2FNGQLu/OSEx7AIijidQ=
-github.com/ankorstore/yokai/fxmetrics v1.1.0/go.mod h1:WBr76IIdlSZIpBsjKSdXCAJBWF0HCp46bwFX8bt0tFk=
+github.com/ankorstore/yokai/fxmetrics v1.2.0 h1:B4vwfOxsUeFXC5rn0bDHsFnOhEFhRq9aUEWpEayEOCY=
+github.com/ankorstore/yokai/fxmetrics v1.2.0/go.mod h1:WBr76IIdlSZIpBsjKSdXCAJBWF0HCp46bwFX8bt0tFk=
 github.com/ankorstore/yokai/fxtrace v1.2.0 h1:SXlWbjKSsb2wVH+hXSE9OD2VwyqkznwwW+kiQcNvEAU=
 github.com/ankorstore/yokai/fxtrace v1.2.0/go.mod h1:ch72eVTlIedETOApK7SXk2NEWpn3yYeM018dNRccocg=
 github.com/ankorstore/yokai/fxworker v1.1.0 h1:zuiVD7Ap+H4drWx0tI8eHWTz+0Uz6JfbbijiOSUX/YQ=

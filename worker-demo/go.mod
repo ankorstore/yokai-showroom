@@ -8,7 +8,7 @@ require (
 	github.com/ankorstore/yokai/config v1.3.0
 	github.com/ankorstore/yokai/fxcore v1.5.0
 	github.com/ankorstore/yokai/fxhealthcheck v1.1.0
-	github.com/ankorstore/yokai/fxmetrics v1.1.0
+	github.com/ankorstore/yokai/fxmetrics v1.2.0
 	github.com/ankorstore/yokai/fxworker v1.1.0
 	github.com/ankorstore/yokai/log v1.2.0
 	github.com/ankorstore/yokai/trace v1.2.0

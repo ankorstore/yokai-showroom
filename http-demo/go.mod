@@ -7,7 +7,7 @@ require (
 	github.com/ankorstore/yokai/fxcore v1.5.0
 	github.com/ankorstore/yokai/fxhealthcheck v1.1.0
 	github.com/ankorstore/yokai/fxhttpserver v1.2.0
-	github.com/ankorstore/yokai/fxmetrics v1.1.0
+	github.com/ankorstore/yokai/fxmetrics v1.2.0
 	github.com/ankorstore/yokai/fxorm v1.1.0
 	github.com/ankorstore/yokai/log v1.2.0
 	github.com/ankorstore/yokai/orm v1.1.0
@@ -18,7 +18,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel/trace v1.24.0
 	go.uber.org/fx v1.21.0
-	gorm.io/gorm v1.25.7
+	gorm.io/gorm v1.25.8
 )
 
 require (
