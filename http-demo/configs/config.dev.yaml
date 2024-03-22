@@ -3,6 +3,9 @@ app:
 modules:
   log:
     output: console
+  orm:
+    driver: mysql
+    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
   trace:
     processor:
       type: otlp-grpc

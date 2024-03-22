@@ -21,9 +21,10 @@
 
 This demo provides:
 
-- a demo [Yokai](https://github.com/ankorstore/yokai) application container, with the [fxworker](https://github.com/ankorstore/yokai/tree/main/fxworker) module to offer a worker subscribing to Pub/Sub, using the [fxgcppubsub](https://github.com/ankorstore/yokai-contrib/tree/main/fxgcppubsub) contrib module
+- a [Yokai](https://github.com/ankorstore/yokai) application container, with the [worker](https://ankorstore.github.io/yokai/modules/fxworker/) module to offer a worker subscribing to Pub/Sub (using the [fxgcppubsub](https://github.com/ankorstore/yokai-contrib/tree/main/fxgcppubsub) contrib module)
 - a [Pub/Sub emulator](https://cloud.google.com/pubsub) container, with preconfigured topic and subscription
 - a [Pub/Sub emulator UI](https://github.com/echocode-io/gcp-pubsub-emulator-ui) container, preconfigured to work with the emulator container
+- a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
 See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
 
@@ -39,8 +40,9 @@ make fresh
 
 After a short moment, the application will offer:
 
-- [http://localhost:8680](http://localhost:8680): Pub/Sub emulator UI
 - [http://localhost:8081](http://localhost:8081): application core dashboard
+- [http://localhost:8680](http://localhost:8680): pub/sub emulator UI
+- [http://localhost:16686](http://localhost:16686): jaeger UI
 
 ### Message publication
 

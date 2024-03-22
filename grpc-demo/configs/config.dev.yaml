@@ -4,3 +4,8 @@ modules:
   log:
     level: debug
     output: console
+  trace:
+    processor:
+      type: otlp-grpc
+      options:
+        host: ${OTLP_COLLECTOR_HOST}:${OTLP_COLLECTOR_PORT}

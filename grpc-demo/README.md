@@ -22,7 +22,10 @@
 
 This demo application is a simple gRPC API offering a [text transformation service](proto/transform.proto).
 
-It provides a demo [Yokai](https://github.com/ankorstore/yokai) application container, with the [fxgrpcserver](https://github.com/ankorstore/yokai/tree/main/fxgrpcserver) module to offer the gRPC API
+It provides:
+
+- a [Yokai](https://github.com/ankorstore/yokai) application container, with the [gRPC server](https://ankorstore.github.io/yokai/modules/fxgrpcserver/) module to offer the gRPC API
+- a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
 See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
 
@@ -40,6 +43,7 @@ After a short moment, the application will offer:
 
 - `localhost:50051`: application gRPC server
 - [http://localhost:8081](http://localhost:8081): application core dashboard
+- [http://localhost:16686](http://localhost:16686): jaeger UI
 
 ### Available services
 
@@ -51,6 +55,8 @@ This demo application provides a [TransformTextService](proto/transform.proto), 
 | `TransformAndSplitText` | streaming | Transforms and splits a given text using a given transformer |
 
 This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check ](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
+
+If you update the [proto definition](proto), you can run `make stubs` to regenerate the stubs.
 
 ### Authentication
 
@@ -100,6 +106,7 @@ This demo application is following the [standard go project layout](https://gith
   - `service/`: gRPC services
   - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
   - `services.go`: dependency injection
+- `proto/`: protobuf definition and stubs
 
 ### Makefile
 

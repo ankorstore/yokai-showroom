@@ -2,8 +2,8 @@ github.com/ankorstore/yokai/config v1.3.0 h1:si2h4mESPN5pj14CBMT/VGFgFn0voKEVylr
 github.com/ankorstore/yokai/config v1.3.0/go.mod h1:OV2QiL2dyNLCxhcGO+GcSa8Wm20+00H03VBHm9SPVuE=
 github.com/ankorstore/yokai/fxconfig v1.1.0 h1:QgRDrZPpSy4wlnzNN37sWniRRAszerBb6WpvMa3hTB0=
 github.com/ankorstore/yokai/fxconfig v1.1.0/go.mod h1:dU8W3eJtioegWEB7X5C+B40Ud+M+vRa5d2UdbAJr9Os=
-github.com/ankorstore/yokai/fxcore v1.5.0 h1:as6jcO+g4uhY1bE1umh5PIAmDS3X4DcH1Vg/hH+/84Y=
-github.com/ankorstore/yokai/fxcore v1.5.0/go.mod h1:GOscfmS2tuq0R2JxiJBAVzfA+Qnl6/5nQzLuXjVFxzk=
+github.com/ankorstore/yokai/fxcore v1.6.0 h1:S7Pa9kEakglsCpRFot/3lE+QSUCw5VDLiBUROiZzjyI=
+github.com/ankorstore/yokai/fxcore v1.6.0/go.mod h1:+qhL91yyrunHnHYUnpbpoPQ+uRfDKQQyCEKA/XpRczc=
 github.com/ankorstore/yokai/fxgenerate v1.1.0 h1:kNEAsZJt7DgwVpG9+/M7p8610BdKHWkX/MYdBLuSIGU=
 github.com/ankorstore/yokai/fxgenerate v1.1.0/go.mod h1:trC9VZEaVjTXuO9GWbqVPGKFkKULDZpLoxdTyTmmpYU=
 github.com/ankorstore/yokai/fxgrpcserver v1.1.0 h1:ugQE5XPDVGDnqXsuqVXWY8zIOEqDwoGpdLae7wPOVlk=
@@ -22,8 +22,8 @@ github.com/ankorstore/yokai/grpcserver v1.1.0 h1:aGqOmI0yUE8+WxRqmEfL+9tLHGcfKPK
 github.com/ankorstore/yokai/grpcserver v1.1.0/go.mod h1:WZs+VB4QaORqCZkXGRvHVfl8lZhTyOtK4xRDzgEtXzg=
 github.com/ankorstore/yokai/healthcheck v1.1.0 h1:PXkEccym7iaVnQltpM5UFi0Xl0n+5rZDzlQju6HmGms=
 github.com/ankorstore/yokai/healthcheck v1.1.0/go.mod h1:IiYgjRa4G3OLZMwAuacuryZZAfDHsBH8PQoK4PgRdZ4=
-github.com/ankorstore/yokai/httpserver v1.3.0 h1:Zk619uJxhWMqzuQJ/E0P6HRqdjtocnTKPEprQfVWw/Q=
-github.com/ankorstore/yokai/httpserver v1.3.0/go.mod h1:N6SR5xf9A4xUTgSL/jEo2A8kUXKgmEBloO9wUQOg7hY=
+github.com/ankorstore/yokai/httpserver v1.4.1 h1:Zz25h6fYvRsJ+1TtnbJP2fO4Dt/tD3+Kgqs2QkpCJzw=
+github.com/ankorstore/yokai/httpserver v1.4.1/go.mod h1:AOCL4cK2bPKrtGFULvOvc8mKHAOw2bLW30CKJra2BB0=
 github.com/ankorstore/yokai/log v1.2.0 h1:jiuDiC0dtqIGIOsFQslUHYoFJ1qjI+rOMa6dI1LBf2Y=
 github.com/ankorstore/yokai/log v1.2.0/go.mod h1:MVvUcms1AYGo0BT6l88B9KJdvtK6/qGKdgyKVXfbmyc=
 github.com/ankorstore/yokai/trace v1.2.0 h1:Jnl++IGNpDYumsZJXP3qjhMdvyHbejiajQwIlU604w0=
@@ -88,8 +88,8 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/pelletier/go-toml/v2 v2.1.1 h1:LWAJwfNvjQZCFIDKWYQaM62NcYeYViCmWIwmOStowAI=
-github.com/pelletier/go-toml/v2 v2.1.1/go.mod h1:tJU2Z3ZkXwnxa4DPO899bsyIoywizdUvyaeZurnPPDc=
+github.com/pelletier/go-toml/v2 v2.2.0 h1:QLgLl2yMN7N+ruc31VynXs1vhMZa7CeHHejIeBAsoHo=
+github.com/pelletier/go-toml/v2 v2.2.0/go.mod h1:1t835xjRzz80PqgE6HHgN2JOsmgYu/h4qDAS4n929Rs=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=
@@ -127,6 +127,7 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
 github.com/stretchr/objx v0.5.2 h1:xuMeJ0Sdp5ZMRXx/aWO6RZxdr3beISkG5/G/aIRr3pY=
+github.com/stretchr/objx v0.5.2/go.mod h1:FRsXN1f5AsAjCGJKqEizvkpNtU+EGNCLh3NxZ/8L+MA=
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=

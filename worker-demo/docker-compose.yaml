@@ -46,6 +46,17 @@ services:
       - PUBSUB_EMULATOR_HOST=${PUBSUB_EMULATOR_HOST:-worker-demo-pubsub:8681}
       - GCP_PROJECT_IDS=${PUBSUB_PROJECT_ID:-demo-project}
 
+  worker-demo-jaeger:
+    container_name: worker-demo-jaeger
+    image: jaegertracing/all-in-one
+    networks:
+      - worker-demo
+    ports:
+      - "4317:4317"
+      - "16686:16686"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
 networks:
   worker-demo:
     driver: bridge

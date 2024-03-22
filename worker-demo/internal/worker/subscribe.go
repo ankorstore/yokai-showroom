@@ -9,6 +9,7 @@ import (
 	"github.com/ankorstore/yokai/log"
 	"github.com/ankorstore/yokai/trace"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 // SubscribeCounter is a metrics counter for received messages.
@@ -41,14 +42,13 @@ func (w *SubscribeWorker) Run(ctx context.Context) error {
 	subscription := w.client.Subscription(w.config.GetString("config.subscription.id"))
 
 	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
-		c, span := trace.CtxTracerProvider(c).Tracer(w.Name()).Start(c, fmt.Sprintf("%s span", w.Name()))
+		data := string(msg.Data)
+
+		c, span := trace.CtxTracerProvider(c).Tracer(w.Name()).Start(c, fmt.Sprintf("%s message", w.Name()))
+		span.SetAttributes(attribute.String("Message", data))
 		defer span.End()
 
-		log.CtxLogger(c).Info().Msgf(
-			"received message: id=%v, data=%v",
-			msg.ID,
-			string(msg.Data),
-		)
+		log.CtxLogger(c).Info().Msgf("received message: id=%v, data=%v", msg.ID, data)
 
 		msg.Ack()
 

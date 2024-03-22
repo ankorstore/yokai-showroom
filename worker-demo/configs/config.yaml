@@ -52,9 +52,6 @@ modules:
           enabled: true
   log:
     level: debug
-  trace:
-    processor:
-      type: noop
   worker:
     metrics:
       collect:

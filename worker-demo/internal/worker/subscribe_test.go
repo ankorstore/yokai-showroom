@@ -93,8 +93,9 @@ func TestSubscribeWorker(t *testing.T) {
 	tracetest.AssertHasTraceSpan(
 		t,
 		traceExporter,
-		"subscribe-worker span",
+		"subscribe-worker message",
 		attribute.String("Worker", "subscribe-worker"),
+		attribute.String("Message", testMessage),
 	)
 
 	// metrics assertion

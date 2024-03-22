@@ -57,9 +57,6 @@ modules:
   log:
     level: info
     output: stdout
-  trace:
-    processor:
-      type: noop
 config:
   authentication:
     enabled: false

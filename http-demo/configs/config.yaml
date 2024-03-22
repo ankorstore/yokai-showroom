@@ -57,8 +57,6 @@ modules:
         enabled: true
         path: templates/*.html
   orm:
-    driver: mysql
-    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
     log:
       enabled: true
       level: info

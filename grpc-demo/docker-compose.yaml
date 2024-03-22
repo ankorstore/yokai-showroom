@@ -19,6 +19,17 @@ services:
     env_file:
       - .env
 
+  grpc-demo-jaeger:
+    container_name: grpc-demo-jaeger
+    image: jaegertracing/all-in-one
+    networks:
+      - grpc-demo
+    ports:
+      - "4317:4317"
+      - "16686:16686"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
 networks:
   grpc-demo:
     driver: bridge

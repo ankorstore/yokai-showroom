@@ -43,7 +43,7 @@ After a short moment, the application will offer:
 
 - [http://localhost:8080](http://localhost:8080): application dashboard
 - [http://localhost:8081](http://localhost:8081): application core dashboard
-- [http://localhost:16686](http://localhost:16686): jaeger UI for traces
+- [http://localhost:16686](http://localhost:16686): jaeger UI
 
 ### Available endpoints
 
