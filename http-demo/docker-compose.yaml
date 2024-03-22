@@ -37,7 +37,6 @@ services:
       - http-demo
     ports:
       - "4317:4317"
-      - "9411:9411"
       - "16686:16686"
     environment:
       - COLLECTOR_OTLP_ENABLED=true
