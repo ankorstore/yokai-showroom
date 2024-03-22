@@ -9,11 +9,11 @@ services:
     networks:
       - grpc-demo
     ports:
-      - "50051:50051"
       - "8081:8081"
+      - "50051:50051"
     expose:
-      - "50051"
       - "8081"
+      - "50051"
     volumes:
       - .:/app
     env_file:
