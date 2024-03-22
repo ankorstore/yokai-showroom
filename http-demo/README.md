@@ -23,8 +23,9 @@ This demo application is a simple REST API (CRUD) to manage [gophers](https://go
 
 It provides:
 
-- a demo [Yokai](https://github.com/ankorstore/yokai) application container, with the [fxhttpserver](https://github.com/ankorstore/yokai/tree/main/fxhttpserver) module to offer the REST API
+- a [Yokai](https://github.com/ankorstore/yokai) application container, with the [HTTP server](https://ankorstore.github.io/yokai/modules/fxhttpserver/) module to offer the gophers API
 - a [MySQL](https://www.mysql.com/) container to store the gophers
+- a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
 See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
 
@@ -42,8 +43,11 @@ After a short moment, the application will offer:
 
 - [http://localhost:8080](http://localhost:8080): application dashboard
 - [http://localhost:8081](http://localhost:8081): application core dashboard
+- [http://localhost:16686](http://localhost:16686): jaeger UI for traces
 
 ### Available endpoints
+
+On [http://localhost:8080](http://localhost:8080), you can use:
 
 | Route                   | Description      | Type     |
 |-------------------------|------------------|----------|
@@ -74,6 +78,7 @@ This demo application is following the [standard go project layout](https://gith
   - `handler/`: HTTP handlers
   - `middleware/`: HTTP middlewares
   - `model/`: models
+  - `repository/`: models repositories
   - `service/`: services
   - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
   - `routing.go`: routing

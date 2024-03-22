@@ -68,9 +68,6 @@ modules:
       values: true
   log:
     level: debug
-  trace:
-    processor:
-      type: noop
 config:
   authentication:
     enabled: false
