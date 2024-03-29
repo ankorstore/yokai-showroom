@@ -26,7 +26,29 @@ This demo provides:
 - a [Pub/Sub emulator UI](https://github.com/echocode-io/gcp-pubsub-emulator-ui) container, preconfigured to work with the emulator container
 - a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
-See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
+### Layout
+
+This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
+
+- `cmd/`: entry points
+- `configs/`: configuration files
+- `internal/`:
+	- `worker/`: workers
+	- `bootstrap.go`: bootstrap (modules, lifecycles, etc)
+	- `services.go`: dependency injection
+
+### Makefile
+
+This demo application provides a `Makefile`:
+
+```
+make up     # start the docker compose stack
+make down   # stop the docker compose stack
+make logs   # stream the docker compose stack logs
+make fresh  # refresh the docker compose stack
+make test   # run tests
+make lint   # run linter
+```
 
 ## Usage
 
@@ -60,29 +82,3 @@ make logs
 
 You will see the [SubscribeWorker](internal/worker/subscribe.go) subscribed to Pub/Sub in action, logging the received
 messages.
-
-## Contents
-
-### Layout
-
-This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
-
-- `cmd/`: entry points
-- `configs/`: configuration files
-- `internal/`:
-	- `worker/`: workers
-	- `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-	- `services.go`: dependency injection
-
-### Makefile
-
-This demo application provides a `Makefile`:
-
-```
-make up     # start the docker compose stack
-make down   # stop the docker compose stack
-make logs   # stream the docker compose stack logs
-make fresh  # refresh the docker compose stack
-make test   # run tests
-make lint   # run linter
-```

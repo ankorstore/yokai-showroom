@@ -27,7 +27,32 @@ It provides:
 - a [Yokai](https://github.com/ankorstore/yokai) application container, with the [gRPC server](https://ankorstore.github.io/yokai/modules/fxgrpcserver/) module to offer the gRPC API
 - a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
-See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
+### Layout
+
+This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
+
+- `cmd/`: entry points
+- `configs/`: configuration files
+- `internal/`:
+  - `interceptor/`: gRPC interceptors
+  - `service/`: gRPC services
+  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
+  - `services.go`: dependency injection
+- `proto/`: protobuf definition and stubs
+
+### Makefile
+
+This demo application provides a `Makefile`:
+
+```
+make up     # start the docker compose stack
+make down   # stop the docker compose stack
+make logs   # stream the docker compose stack logs
+make fresh  # refresh the docker compose stack
+make stubs  # generate gRPC stubs with protoc
+make test   # run tests
+make lint   # run linter
+```
 
 ## Usage
 
@@ -94,32 +119,3 @@ grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}'
 ```
 
 You can use any gRPC clients, for example [Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/) or [Evans](https://github.com/ktr0731/evans).
-
-## Contents
-
-### Layout
-
-This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
-
-- `cmd/`: entry points
-- `configs/`: configuration files
-- `internal/`:
-  - `interceptor/`: gRPC interceptors
-  - `service/`: gRPC services
-  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-  - `services.go`: dependency injection
-- `proto/`: protobuf definition and stubs
-
-### Makefile
-
-This demo application provides a `Makefile`:
-
-```
-make up     # start the docker compose stack
-make down   # stop the docker compose stack
-make logs   # stream the docker compose stack logs
-make fresh  # refresh the docker compose stack
-make stubs  # generate gRPC stubs with protoc
-make test   # run tests
-make lint   # run linter
-```

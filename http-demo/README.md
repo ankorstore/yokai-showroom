@@ -27,7 +27,34 @@ It provides:
 - a [MySQL](https://www.mysql.com/) container to store the gophers
 - a [Jaeger](https://www.jaegertracing.io/) container to collect the application traces
 
-See the [Yokai documentation](https://ankorstore.github.io/yokai) for more details.
+### Layout
+
+This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
+
+- `cmd/`: entry points
+- `configs/`: configuration files
+- `internal/`:
+  - `handler/`: HTTP handlers
+  - `middleware/`: HTTP middlewares
+  - `model/`: models
+  - `repository/`: models repositories
+  - `service/`: services
+  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
+  - `routing.go`: routing
+  - `services.go`: dependency injection
+
+### Makefile
+
+This demo application provides a `Makefile`:
+
+```
+make up     # start the docker compose stack
+make down   # stop the docker compose stack
+make logs   # stream the docker compose stack logs
+make fresh  # refresh the docker compose stack
+make test   # run tests
+make lint   # run linter
+```
 
 ## Usage
 
@@ -65,34 +92,3 @@ This demo application provides an example [authentication middleware](internal/m
 You can enable authentication in the application [configuration file](configs/config.yaml) with `config.authentication.enabled=true`.
 
 If enabled, you need to provide the secret configured in `config.authentication.secret` as request `Authorization` header.
-
-## Contents
-
-### Layout
-
-This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
-
-- `cmd/`: entry points
-- `configs/`: configuration files
-- `internal/`:
-  - `handler/`: HTTP handlers
-  - `middleware/`: HTTP middlewares
-  - `model/`: models
-  - `repository/`: models repositories
-  - `service/`: services
-  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-  - `routing.go`: routing
-  - `services.go`: dependency injection
-
-### Makefile
-
-This demo application provides a `Makefile`:
-
-```
-make up     # start the docker compose stack
-make down   # stop the docker compose stack
-make logs   # stream the docker compose stack logs
-make fresh  # refresh the docker compose stack
-make test   # run tests
-make lint   # run linter
-```
