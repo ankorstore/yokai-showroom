@@ -8,14 +8,13 @@
 
 <!-- TOC -->
 * [Overview](#overview)
+  * [Layout](#layout)
+  * [Makefile](#makefile)
 * [Usage](#usage)
   * [Start the application](#start-the-application)
   * [Available services](#available-services)
   * [Authentication](#authentication)
   * [Examples](#examples)
-* [Contents](#contents)
-  * [Layout](#layout)
-  * [Makefile](#makefile)
 <!-- TOC -->
 
 ## Overview

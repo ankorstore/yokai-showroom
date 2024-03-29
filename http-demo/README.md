@@ -8,13 +8,12 @@
 
 <!-- TOC -->
 * [Overview](#overview)
+  * [Layout](#layout)
+  * [Makefile](#makefile)
 * [Usage](#usage)
   * [Start the application](#start-the-application)
   * [Available endpoints](#available-endpoints)
   * [Authentication](#authentication)
-* [Contents](#contents)
-  * [Layout](#layout)
-  * [Makefile](#makefile)
 <!-- TOC -->
 
 ## Overview
