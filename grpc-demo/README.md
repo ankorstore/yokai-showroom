@@ -54,9 +54,11 @@ This demo application provides a [TransformTextService](proto/example.proto), wi
 | `TransformText`         | unary     | Transforms a given text using a given transformer            |
 | `TransformAndSplitText` | streaming | Transforms and splits a given text using a given transformer |
 
-This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
+If no `Transformer` is provided, the transformation configured in `config.transform.default` will be applied.
 
 If you update the [proto definition](proto/example.proto), you can run `make stubs` to regenerate the stubs.
+
+This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
 
 ### Authentication
 

@@ -58,6 +58,8 @@ modules:
     level: info
     output: stdout
 config:
+  transform:
+    default: upper
   authentication:
     enabled: false
     secret: super-secret

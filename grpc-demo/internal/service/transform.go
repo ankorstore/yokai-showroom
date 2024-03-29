@@ -108,8 +108,14 @@ func (s *TransformTextService) transform(in *proto.TransformTextRequest) string 
 
 		return strings.ToLower(in.Text)
 	default:
-		TransformerCounter.WithLabelValues("unspecified").Inc()
+		if strings.ToLower(s.config.GetString("config.transform.default")) == "upper" {
+			TransformerCounter.WithLabelValues("uppercase").Inc()
 
-		return in.Text
+			return strings.ToUpper(in.Text)
+		} else {
+			TransformerCounter.WithLabelValues("lowercase").Inc()
+
+			return strings.ToLower(in.Text)
+		}
 	}
 }
