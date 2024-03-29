@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.25.3
-// source: proto/transform.proto
+// source: proto/example.proto
 
 package proto
 
@@ -38,7 +38,7 @@ func NewTransformTextServiceClient(cc grpc.ClientConnInterface) TransformTextSer
 
 func (c *transformTextServiceClient) TransformText(ctx context.Context, in *TransformTextRequest, opts ...grpc.CallOption) (*TransformTextResponse, error) {
 	out := new(TransformTextResponse)
-	err := c.cc.Invoke(ctx, "/transform.TransformTextService/TransformText", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/example.TransformTextService/TransformText", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *transformTextServiceClient) TransformText(ctx context.Context, in *Tran
 }
 
 func (c *transformTextServiceClient) TransformAndSplitText(ctx context.Context, opts ...grpc.CallOption) (TransformTextService_TransformAndSplitTextClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TransformTextService_ServiceDesc.Streams[0], "/transform.TransformTextService/TransformAndSplitText", opts...)
+	stream, err := c.cc.NewStream(ctx, &TransformTextService_ServiceDesc.Streams[0], "/example.TransformTextService/TransformAndSplitText", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func _TransformTextService_TransformText_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/transform.TransformTextService/TransformText",
+		FullMethod: "/example.TransformTextService/TransformText",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TransformTextServiceServer).TransformText(ctx, req.(*TransformTextRequest))
@@ -158,7 +158,7 @@ func (x *transformTextServiceTransformAndSplitTextServer) Recv() (*TransformText
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TransformTextService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "transform.TransformTextService",
+	ServiceName: "example.TransformTextService",
 	HandlerType: (*TransformTextServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -174,5 +174,5 @@ var TransformTextService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "proto/transform.proto",
+	Metadata: "proto/example.proto",
 }

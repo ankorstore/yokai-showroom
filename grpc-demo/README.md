@@ -20,7 +20,7 @@
 
 ## Overview
 
-This demo application is a simple gRPC API offering a [text transformation service](proto/transform.proto).
+This demo application is a simple gRPC API offering a [text transformation service](proto/example.proto).
 
 It provides:
 
@@ -47,14 +47,14 @@ After a short moment, the application will offer:
 
 ### Available services
 
-This demo application provides a [TransformTextService](proto/transform.proto), with the following `RPCs`:
+This demo application provides a [TransformTextService](proto/example.proto), with the following `RPCs`:
 
 | RPC                     | Type      | Description                                                  |
 |-------------------------|-----------|--------------------------------------------------------------|
 | `TransformText`         | unary     | Transforms a given text using a given transformer            |
 | `TransformAndSplitText` | streaming | Transforms and splits a given text using a given transformer |
 
-This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check ](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
+This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
 
 If you update the [proto definition](proto), you can run `make stubs` to regenerate the stubs.
 
@@ -73,7 +73,7 @@ Usage examples with [grpcurl](https://github.com/fullstorydev/grpcurl):
 - with `TransformTextService/TransformText`:
 
 ```shell
-grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' localhost:50051 transform.TransformTextService/TransformText
+grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' localhost:50051 example.TransformTextService/TransformText
 {
   "text": "ABC"
 }
@@ -82,7 +82,7 @@ grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' loc
 - with `TransformTextService/TransformAndSplitText`:
 
 ```shell
-grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}' localhost:50051 transform.TransformTextService/TransformAndSplitText
+grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}' localhost:50051 example.TransformTextService/TransformAndSplitText
 {
   "text": "abc"
 }
