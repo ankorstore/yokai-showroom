@@ -6,10 +6,6 @@
 
 > Showroom for demo applications based on the [Yokai](https://github.com/ankorstore/yokai) framework.
 
-<p align="center">
-  <img src="docs/assets/images/yokai-bck.png" width="350" height="350" />
-</p>
-
 ## Documentation
 
 For more information about the [Yokai](https://github.com/ankorstore/yokai) framework, you can check the online [documentation](https://ankorstore.github.io/yokai).
