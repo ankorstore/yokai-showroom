@@ -16,7 +16,7 @@ func ProvideServices() fx.Option {
 		fxgrpcserver.AsGrpcServerUnaryInterceptor(interceptor.NewAuthenticationUnaryInterceptor),
 		fxgrpcserver.AsGrpcServerStreamInterceptor(interceptor.NewAuthenticationStreamInterceptor),
 		// gRPC server service
-		fxgrpcserver.AsGrpcServerService(service.NewTransformTextServiceService, &proto.TransformTextService_ServiceDesc),
+		fxgrpcserver.AsGrpcServerService(service.NewTransformTextService, &proto.TransformTextService_ServiceDesc),
 		// metrics
 		fxmetrics.AsMetricsCollector(service.TransformerCounter),
 	)

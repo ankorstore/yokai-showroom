@@ -25,21 +25,21 @@ var TransformerCounter = prometheus.NewCounterVec(
 	},
 )
 
-// TransformTextServiceService is the gRPC server service for TransformTextService.
-type TransformTextServiceService struct {
+// TransformTextService is the gRPC server service for TransformTextService.
+type TransformTextService struct {
 	proto.UnimplementedTransformTextServiceServer
 	config *config.Config
 }
 
-// NewTransformTextServiceService returns a new [TransformTextServiceService] instance.
-func NewTransformTextServiceService(cfg *config.Config) *TransformTextServiceService {
-	return &TransformTextServiceService{
+// NewTransformTextService returns a new [TransformTextService] instance.
+func NewTransformTextService(cfg *config.Config) *TransformTextService {
+	return &TransformTextService{
 		config: cfg,
 	}
 }
 
 // TransformText transforms the text provided in a [proto.TransformTextRequest] by applying the provided transformer.
-func (s *TransformTextServiceService) TransformText(ctx context.Context, in *proto.TransformTextRequest) (*proto.TransformTextResponse, error) {
+func (s *TransformTextService) TransformText(ctx context.Context, in *proto.TransformTextRequest) (*proto.TransformTextResponse, error) {
 	ctx, span := trace.CtxTracerProvider(ctx).Tracer("TransformTextService").Start(ctx, "TransformText")
 	defer span.End()
 
@@ -53,7 +53,7 @@ func (s *TransformTextServiceService) TransformText(ctx context.Context, in *pro
 }
 
 // TransformAndSplitText splits the text provided in a streamed [proto.TransformTextRequest] in words, and transform each word by applying the provided transformer.
-func (s *TransformTextServiceService) TransformAndSplitText(stream proto.TransformTextService_TransformAndSplitTextServer) error {
+func (s *TransformTextService) TransformAndSplitText(stream proto.TransformTextService_TransformAndSplitTextServer) error {
 	ctx := stream.Context()
 
 	ctx, span := trace.CtxTracerProvider(ctx).Tracer("TransformTextService").Start(ctx, "TransformAndSplitText")
@@ -97,7 +97,7 @@ func (s *TransformTextServiceService) TransformAndSplitText(stream proto.Transfo
 }
 
 //nolint:exhaustive
-func (s *TransformTextServiceService) transform(in *proto.TransformTextRequest) string {
+func (s *TransformTextService) transform(in *proto.TransformTextRequest) string {
 	switch in.Transformer {
 	case proto.Transformer_TRANSFORMER_UPPERCASE:
 		TransformerCounter.WithLabelValues("uppercase").Inc()

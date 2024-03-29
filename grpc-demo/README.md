@@ -56,7 +56,7 @@ This demo application provides a [TransformTextService](proto/example.proto), wi
 
 This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
 
-If you update the [proto definition](proto), you can run `make stubs` to regenerate the stubs.
+If you update the [proto definition](proto/example.proto), you can run `make stubs` to regenerate the stubs.
 
 ### Authentication
 
