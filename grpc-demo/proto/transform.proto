@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package example;
+package transform;
 
 option go_package = "github.com/ankorstore/yokai-showroom/grpc-demo/proto";
 

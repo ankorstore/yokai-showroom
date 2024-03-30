@@ -16,7 +16,7 @@ fresh:
 	docker compose up -d --build -V
 
 stubs:
-	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/example.proto
+	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative $(from)
 logs:
 	docker compose logs -f
 

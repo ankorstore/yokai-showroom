@@ -19,7 +19,7 @@
 
 ## Overview
 
-This demo application is a simple gRPC API offering a [text transformation service](proto/example.proto).
+This demo application is a simple gRPC API offering a [text transformation service](proto/transform.proto).
 
 It provides:
 
@@ -48,7 +48,7 @@ make up     # start the docker compose stack
 make down   # stop the docker compose stack
 make logs   # stream the docker compose stack logs
 make fresh  # refresh the docker compose stack
-make stubs  # generate gRPC stubs with protoc (ex: make stubs from=proto/example.proto)
+make stubs  # generate gRPC stubs with protoc (ex: make stubs from=proto/transform.proto)
 make test   # run tests
 make lint   # run linter
 ```
@@ -71,7 +71,7 @@ After a short moment, the application will offer:
 
 ### Available services
 
-This demo application provides a [TransformTextService](proto/example.proto), with the following `RPCs`:
+This demo application provides a [TransformTextService](proto/transform.proto), with the following `RPCs`:
 
 | RPC                     | Type      | Description                                                  |
 |-------------------------|-----------|--------------------------------------------------------------|
@@ -80,7 +80,7 @@ This demo application provides a [TransformTextService](proto/example.proto), wi
 
 If no `Transformer` is provided, the transformation configured in `config.transform.default` will be applied.
 
-If you update the [proto definition](proto/example.proto), you can run `make stubs from=proto/example.proto` to regenerate the stubs.
+If you update the [proto definition](proto/transform.proto), you can run `make stubs from=proto/transform.proto` to regenerate the stubs.
 
 This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
 
@@ -99,7 +99,7 @@ Usage examples with [grpcurl](https://github.com/fullstorydev/grpcurl):
 - with `TransformTextService/TransformText`:
 
 ```shell
-grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' localhost:50051 example.TransformTextService/TransformText
+grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' localhost:50051 transform.TransformTextService/TransformText
 {
   "text": "ABC"
 }
@@ -108,7 +108,7 @@ grpcurl -plaintext -d '{"text":"abc","transformer":"TRANSFORMER_UPPERCASE"}' loc
 - with `TransformTextService/TransformAndSplitText`:
 
 ```shell
-grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}' localhost:50051 example.TransformTextService/TransformAndSplitText
+grpcurl -plaintext -d '{"text":"ABC DEF","transformer":"TRANSFORMER_LOWERCASE"}' localhost:50051 transform.TransformTextService/TransformAndSplitText
 {
   "text": "abc"
 }
