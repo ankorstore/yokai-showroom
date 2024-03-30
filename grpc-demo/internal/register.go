@@ -9,13 +9,13 @@ import (
 	"go.uber.org/fx"
 )
 
-// ProvideServices is used to register the application services.
-func ProvideServices() fx.Option {
+// Register is used to register the application dependencies.
+func Register() fx.Option {
 	return fx.Options(
-		// gRPC server interceptors
+		// interceptors
 		fxgrpcserver.AsGrpcServerUnaryInterceptor(interceptor.NewAuthenticationUnaryInterceptor),
 		fxgrpcserver.AsGrpcServerStreamInterceptor(interceptor.NewAuthenticationStreamInterceptor),
-		// gRPC server service
+		// service
 		fxgrpcserver.AsGrpcServerService(service.NewTransformTextService, &proto.TransformTextService_ServiceDesc),
 		// metrics
 		fxmetrics.AsMetricsCollector(service.TransformerCounter),

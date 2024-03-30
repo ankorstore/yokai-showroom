@@ -10,7 +10,8 @@ import (
 	"go.uber.org/fx"
 )
 
-func ProvideServices() fx.Option {
+// Register is used to register the application dependencies.
+func Register() fx.Option {
 	return fx.Options(
 		// dashboard metrics
 		fxmetrics.AsMetricsCollector(handler.DashboardHistogram),

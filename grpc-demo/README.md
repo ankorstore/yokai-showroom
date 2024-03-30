@@ -35,8 +35,8 @@ This demo application is following the [recommended project layout](https://go.d
 - `internal/`:
   - `interceptor/`: gRPC interceptors
   - `service/`: gRPC services
-  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-  - `services.go`: dependency injection
+  - `bootstrap.go`: bootstrap
+  - `register.go`: dependencies registration
 - `proto/`: protobuf definition and stubs
 
 ### Makefile
@@ -48,7 +48,7 @@ make up     # start the docker compose stack
 make down   # stop the docker compose stack
 make logs   # stream the docker compose stack logs
 make fresh  # refresh the docker compose stack
-make stubs  # generate gRPC stubs with protoc
+make stubs  # generate gRPC stubs with protoc (ex: make stubs from=proto/example.proto)
 make test   # run tests
 make lint   # run linter
 ```
@@ -80,7 +80,7 @@ This demo application provides a [TransformTextService](proto/example.proto), wi
 
 If no `Transformer` is provided, the transformation configured in `config.transform.default` will be applied.
 
-If you update the [proto definition](proto/example.proto), you can run `make stubs` to regenerate the stubs.
+If you update the [proto definition](proto/example.proto), you can run `make stubs from=proto/example.proto` to regenerate the stubs.
 
 This demo application also provides [reflection](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#reflection) and [health check](https://ankorstore.github.io/yokai/modules/fxgrpcserver/#health-check) services.
 

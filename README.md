@@ -8,7 +8,7 @@
 
 ## Documentation
 
-For more information about the [Yokai](https://github.com/ankorstore/yokai) framework, you can check the online [documentation](https://ankorstore.github.io/yokai).
+For more information about the [Yokai](https://github.com/ankorstore/yokai) framework, you can check its [documentation](https://ankorstore.github.io/yokai).
 
 ## Demo applications
 

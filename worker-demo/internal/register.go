@@ -9,7 +9,8 @@ import (
 	"go.uber.org/fx"
 )
 
-func ProvideServices() fx.Option {
+// Register is used to register the application dependencies.
+func Register() fx.Option {
 	return fx.Options(
 		// pub/sub subscriber worker
 		fxworker.AsWorker(worker.NewSubscribeWorker),

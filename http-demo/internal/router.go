@@ -8,7 +8,8 @@ import (
 	"go.uber.org/fx"
 )
 
-func ProvideRouting() fx.Option {
+// Router is used to register the application HTTP middlewares and handlers.
+func Router() fx.Option {
 	return fx.Options(
 		// authentication middleware
 		fxhttpserver.AsMiddleware(middleware.NewAuthenticationMiddleware, fxhttpserver.GlobalUse),

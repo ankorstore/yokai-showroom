@@ -18,7 +18,9 @@
 
 ## Overview
 
-This demo provides:
+This demo application is a simple subscriber to [Pub/Sub](https://cloud.google.com/pubsub).
+
+It provides:
 
 - a [Yokai](https://github.com/ankorstore/yokai) application container, with the [worker](https://ankorstore.github.io/yokai/modules/fxworker/) module to offer a worker subscribing to Pub/Sub (using the [fxgcppubsub](https://github.com/ankorstore/yokai-contrib/tree/main/fxgcppubsub) contrib module)
 - a [Pub/Sub emulator](https://cloud.google.com/pubsub) container, with preconfigured topic and subscription
@@ -32,9 +34,9 @@ This demo application is following the [recommended project layout](https://go.d
 - `cmd/`: entry points
 - `configs/`: configuration files
 - `internal/`:
-	- `worker/`: workers
-	- `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-	- `services.go`: dependency injection
+  - `worker/`: workers
+  - `bootstrap.go`: bootstrap
+  - `register.go`: dependencies registration
 
 ### Makefile
 
