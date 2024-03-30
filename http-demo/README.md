@@ -28,7 +28,7 @@ It provides:
 
 ### Layout
 
-This demo application is following the [standard go project layout](https://github.com/golang-standards/project-layout):
+This demo application is following the [recommended project layout](https://go.dev/doc/modules/layout):
 
 - `cmd/`: entry points
 - `configs/`: configuration files
