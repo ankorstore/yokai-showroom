@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Go version](https://img.shields.io/badge/Go-1.22-blue)](https://go.dev/)
-[![Awesome Go](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/avelino/awesome-go)
 
 > Showroom for demo applications based on the [Yokai](https://github.com/ankorstore/yokai) framework.
 
