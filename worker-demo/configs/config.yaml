@@ -4,7 +4,7 @@ app:
 modules:
   core:
     server:
-      port: 8081
+      address: ":8081"
       dashboard:
         enabled: true
         overview:
@@ -44,7 +44,7 @@ modules:
           expose: true
   http:
     server:
-      port: 8080
+      address: ":8080"
       trace:
         enabled: true
       metrics:

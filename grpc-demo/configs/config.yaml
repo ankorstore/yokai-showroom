@@ -4,7 +4,7 @@ app:
 modules:
   core:
     server:
-      port: 8081
+      address: ":8081"
       dashboard:
         enabled: true
         overview:
@@ -44,7 +44,7 @@ modules:
           expose: true
   grpc:
     server:
-      port: 50051
+      address: ":50051"
       reflection:
         enabled: true
       trace:
