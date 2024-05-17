@@ -1,43 +1,34 @@
 package gopher_test
 
 import (
-	"context"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
+	"github.com/ankorstore/yokai-showroom/http-demo/db/sqlc"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
+	"github.com/ankorstore/yokai/fxsql"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
-	"gorm.io/gorm"
 )
 
 func TestListGophersHandlerSuccess(t *testing.T) {
 	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
-	var repository *repository.GopherRepository
+	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter, &repository))
-
-	// populate database
-	err := repository.Create(context.Background(), &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	})
-	assert.NoError(t, err)
-
-	err = repository.Create(context.Background(), &model.Gopher{
-		Name: "gopher 2",
-		Job:  "job 2",
-	})
-	assert.NoError(t, err)
+	internal.RunTest(
+		t,
+		fxsql.RunFxSQLSeeds("gophers"),
+		fx.Populate(&httpServer, &metricsRegistry),
+	)
 
 	// [GET] /gophers response assertion
 	req := httptest.NewRequest(http.MethodGet, "/gophers", nil)
@@ -46,28 +37,35 @@ func TestListGophersHandlerSuccess(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 
-	var gophers []*model.Gopher
-	err = json.Unmarshal(rec.Body.Bytes(), &gophers)
+	var gophers []*sqlc.Gopher
+	err := json.Unmarshal(rec.Body.Bytes(), &gophers)
 	assert.NoError(t, err)
 
-	assert.Len(t, gophers, 2)
-	assert.Equal(t, gophers[0].Name, "gopher 1")
-	assert.Equal(t, gophers[0].Job, "job 1")
-	assert.Equal(t, gophers[1].Name, "gopher 2")
-	assert.Equal(t, gophers[1].Job, "job 2")
+	assert.Len(t, gophers, 3)
+	assert.Equal(t, gophers[0].Name, "alice")
+	assert.Equal(t, gophers[0].Job.String, "architect")
+	assert.Equal(t, gophers[1].Name, "bob")
+	assert.Equal(t, gophers[1].Job.String, "builder")
+	assert.Equal(t, gophers[2].Name, "carl")
+	assert.Equal(t, gophers[2].Job.String, "carpenter")
 
-	// log assertion
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called list gophers",
-	})
+	// metrics assertion
+	expectedMetric := `
+        # HELP gophers_service_operations_total Number of operations on the GopherService
+        # TYPE gophers_service_operations_total counter
+        gophers_service_operations_total{operation="list"} 1
+    `
 
-	// trace assertion
-	tracetest.AssertHasTraceSpan(t, traceExporter, "list gophers service")
+	err = testutil.GatherAndCompare(
+		metricsRegistry,
+		strings.NewReader(expectedMetric),
+		"gophers_service_operations_total",
+	)
+	assert.NoError(t, err)
 }
 
 func TestListGophersHandlerInternalServerErrorOnMissingTable(t *testing.T) {
-	var db *gorm.DB
+	var db *sql.DB
 	var httpServer *echo.Echo
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
@@ -75,7 +73,7 @@ func TestListGophersHandlerInternalServerErrorOnMissingTable(t *testing.T) {
 	internal.RunTest(t, fx.Populate(&db, &httpServer, &logBuffer, &traceExporter))
 
 	// drop table for failure
-	err := db.Migrator().DropTable(&model.Gopher{})
+	_, err := db.Exec("DROP TABLE gophers")
 	assert.NoError(t, err)
 
 	// [GET] /gophers response assertion

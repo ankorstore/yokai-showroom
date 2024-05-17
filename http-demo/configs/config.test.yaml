@@ -1,9 +1,11 @@
 app:
   debug: true
 modules:
-  orm:
+  sql:
     driver: sqlite
     dsn: ":memory:"
+    migrations:
+      stdout: false
   log:
     output: test
   trace:
@@ -15,3 +17,8 @@ config:
     secret: ${AUTH_SECRET}
   dashboard:
     title: Test dashboard title
+  seed:
+    gophers:
+      alice: architect
+      bob: builder
+      carl: carpenter

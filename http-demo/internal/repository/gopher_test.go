@@ -2,48 +2,48 @@ package repository_test
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
+	"github.com/ankorstore/yokai-showroom/http-demo/db/sqlc"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
-	"gorm.io/gorm"
 )
 
 func TestFindSuccess(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&querier))
+
+	repo := repository.NewGopherRepository(querier)
 
 	ctx := context.Background()
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
+	params := sqlc.CreateGopherParams{
+		Name: "test",
+		Job:  sql.NullString{String: "test", Valid: true},
 	}
 
-	err := repo.Create(ctx, gopher)
+	id, err := repo.Create(ctx, params)
 	assert.NoError(t, err)
 
-	foundGopher, err := repo.Find(ctx, 1)
+	foundGopher, err := repo.Find(ctx, id)
 	assert.NoError(t, err)
-	assert.Equal(t, "gopher 1", foundGopher.Name)
-	assert.Equal(t, "job 1", foundGopher.Job)
+	assert.Equal(t, "test", foundGopher.Name)
+	assert.Equal(t, "test", foundGopher.Job)
 }
 
 func TestFindError(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var db *sql.DB
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&db, &querier))
 
-	d, err := db.DB()
-	assert.NoError(t, err)
+	repo := repository.NewGopherRepository(querier)
 
-	err = d.Close()
+	err := db.Close()
 	assert.NoError(t, err)
 
 	gopher, err := repo.Find(context.Background(), 1)
@@ -52,39 +52,35 @@ func TestFindError(t *testing.T) {
 }
 
 func TestFindAllSuccess(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&querier))
+
+	repo := repository.NewGopherRepository(querier)
 
 	ctx := context.Background()
-
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
 
 	foundGophers, err := repo.FindAll(ctx)
 	assert.NoError(t, err)
 
 	assert.Len(t, foundGophers, 1)
-	assert.Equal(t, "gopher 1", foundGophers[0].Name)
-	assert.Equal(t, "job 1", foundGophers[0].Job)
+	assert.Equal(t, "alice", foundGophers[0].Name)
+	assert.Equal(t, "architect", foundGophers[0].Job)
+	assert.Equal(t, "bob", foundGophers[1].Name)
+	assert.Equal(t, "builder", foundGophers[1].Job)
+	assert.Equal(t, "carl", foundGophers[2].Name)
+	assert.Equal(t, "carpenter", foundGophers[2].Job)
 }
 
 func TestFindAllError(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var db *sql.DB
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&db, &querier))
 
-	d, err := db.DB()
-	assert.NoError(t, err)
+	repo := repository.NewGopherRepository(querier)
 
-	err = d.Close()
+	err := db.Close()
 	assert.NoError(t, err)
 
 	gopher, err := repo.FindAll(context.Background())
@@ -93,129 +89,72 @@ func TestFindAllError(t *testing.T) {
 }
 
 func TestCreateSuccess(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&querier))
+
+	repo := repository.NewGopherRepository(querier)
 
 	ctx := context.Background()
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err := repo.Create(ctx, gopher)
+	id, err := repo.Create(ctx, sqlc.CreateGopherParams{
+		Name: "test",
+		Job:  sql.NullString{String: "test", Valid: true},
+	})
 	assert.NoError(t, err)
 
-	foundGopher, err := repo.Find(ctx, 1)
+	foundGopher, err := repo.Find(ctx, id)
 	assert.NoError(t, err)
-	assert.Equal(t, "gopher 1", foundGopher.Name)
-	assert.Equal(t, "job 1", foundGopher.Job)
+	assert.Equal(t, "test", foundGopher.Name)
+	assert.Equal(t, "test", foundGopher.Job)
 }
 
 func TestCreateError(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var db *sql.DB
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&db, &querier))
 
-	d, err := db.DB()
-	assert.NoError(t, err)
-
-	err = d.Close()
-	assert.NoError(t, err)
-
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err = repo.Create(context.Background(), gopher)
-	assert.Error(t, err)
-}
-
-func TestUpdateSuccess(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
-
-	repo := repository.NewGopherRepository(db)
+	repo := repository.NewGopherRepository(querier)
 
 	ctx := context.Background()
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err := repo.Create(ctx, gopher)
+	err := db.Close()
 	assert.NoError(t, err)
 
-	err = repo.Update(ctx, gopher, &model.Gopher{
-		Name: "new gopher 1",
-		Job:  "new job 1",
-	})
-	assert.NoError(t, err)
-	assert.Equal(t, "new gopher 1", gopher.Name)
-	assert.Equal(t, "new job 1", gopher.Job)
-}
-
-func TestUpdateError(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
-
-	repo := repository.NewGopherRepository(db)
-
-	d, err := db.DB()
-	assert.NoError(t, err)
-
-	err = d.Close()
-	assert.NoError(t, err)
-
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err = repo.Update(context.Background(), gopher, &model.Gopher{
-		Name: "new gopher 1",
-		Job:  "new job 1",
+	_, err = repo.Create(ctx, sqlc.CreateGopherParams{
+		Name: "test",
+		Job:  sql.NullString{String: "test", Valid: true},
 	})
 	assert.Error(t, err)
 }
 
 func TestDeleteSuccess(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&querier))
+
+	repo := repository.NewGopherRepository(querier)
 
 	ctx := context.Background()
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
-
-	err = repo.Delete(ctx, gopher)
+	err := repo.Delete(ctx, 1)
 	assert.NoError(t, err)
 }
 
 func TestDeleteError(t *testing.T) {
-	var db *gorm.DB
-	internal.RunTest(t, fx.Populate(&db))
+	var db *sql.DB
+	var querier sqlc.Querier
 
-	repo := repository.NewGopherRepository(db)
+	internal.RunTest(t, fx.Populate(&db, &querier))
 
-	d, err := db.DB()
+	repo := repository.NewGopherRepository(querier)
+
+	ctx := context.Background()
+
+	err := db.Close()
 	assert.NoError(t, err)
 
-	err = d.Close()
+	err = repo.Delete(ctx, 1)
 	assert.NoError(t, err)
-
-	err = repo.Delete(context.Background(), &model.Gopher{})
-	assert.Error(t, err)
 }
