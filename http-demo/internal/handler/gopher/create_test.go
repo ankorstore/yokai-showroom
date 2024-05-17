@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/db/sqlc"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
@@ -33,7 +33,7 @@ func TestCreateGopherHandlerSuccess(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, rec.Code)
 
-	var gopher sqlc.Gopher
+	var gopher model.Gopher
 	err := json.Unmarshal(rec.Body.Bytes(), &gopher)
 	assert.NoError(t, err)
 

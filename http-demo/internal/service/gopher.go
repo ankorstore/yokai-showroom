@@ -36,22 +36,23 @@ func NewGopherService(config *config.Config, repository *repository.GopherReposi
 }
 
 // List returns a list of all gophers.
-func (s *GopherService) List(ctx context.Context) ([]model.Gopher, error) {
+func (s *GopherService) List(ctx context.Context, name string, job string) ([]model.Gopher, error) {
 	GopherServiceCounter.WithLabelValues("list").Inc()
 
-	return s.repository.FindAll(ctx, repository.GopherRepositoryFindAllParams{})
+	return s.repository.FindAll(ctx, repository.GopherRepositoryFindAllParams{
+		Name: sql.NullString{String: name, Valid: name != ""},
+		Job:  sql.NullString{String: job, Valid: job != ""},
+	})
 }
 
 // Create creates a new gopher.
 func (s *GopherService) Create(ctx context.Context, name string, job string) (int, error) {
 	GopherServiceCounter.WithLabelValues("create").Inc()
 
-	params := repository.GopherRepositoryCreateParams{
+	return s.repository.Create(ctx, repository.GopherRepositoryCreateParams{
 		Name: name,
 		Job:  sql.NullString{String: job, Valid: job != ""},
-	}
-
-	return s.repository.Create(ctx, params)
+	})
 }
 
 // Get returns a gopher by id.

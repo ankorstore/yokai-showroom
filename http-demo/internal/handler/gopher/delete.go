@@ -34,7 +34,7 @@ func (h *DeleteGopherHandler) Handle() echo.HandlerFunc {
 		err = h.service.Delete(c.Request().Context(), id)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot get gopher with id %d: %v", id, err))
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", id, err))
 			}
 
 			return fmt.Errorf("cannot delete gopher: %w", err)

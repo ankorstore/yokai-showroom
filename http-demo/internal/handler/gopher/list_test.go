@@ -3,12 +3,12 @@ package gopher_test
 import (
 	"database/sql"
 	"encoding/json"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/db/sqlc"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/ankorstore/yokai/log/logtest"
@@ -37,17 +37,21 @@ func TestListGophersHandlerSuccess(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 
-	var gophers []*sqlc.Gopher
+	var gophers []model.Gopher
 	err := json.Unmarshal(rec.Body.Bytes(), &gophers)
 	assert.NoError(t, err)
 
-	assert.Len(t, gophers, 3)
+	assert.Len(t, gophers, 5)
 	assert.Equal(t, gophers[0].Name, "alice")
-	assert.Equal(t, gophers[0].Job.String, "architect")
+	assert.Equal(t, gophers[0].Job.String, "frontend")
 	assert.Equal(t, gophers[1].Name, "bob")
-	assert.Equal(t, gophers[1].Job.String, "builder")
+	assert.Equal(t, gophers[1].Job.String, "backend")
 	assert.Equal(t, gophers[2].Name, "carl")
-	assert.Equal(t, gophers[2].Job.String, "carpenter")
+	assert.Equal(t, gophers[2].Job.String, "backend")
+	assert.Equal(t, gophers[3].Name, "dan")
+	assert.Equal(t, gophers[3].Job.String, "frontend")
+	assert.Equal(t, gophers[4].Name, "elvis")
+	assert.Equal(t, gophers[4].Job.String, "backend")
 
 	// metrics assertion
 	expectedMetric := `

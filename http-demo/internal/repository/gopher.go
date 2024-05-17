@@ -51,21 +51,21 @@ type GopherRepositoryFindAllParams struct {
 
 // FindAll finds all gophers.
 func (r *GopherRepository) FindAll(ctx context.Context, params GopherRepositoryFindAllParams) ([]model.Gopher, error) {
-	queryBuilder := sq.
+	qb := sq.
 		Select("id", "name", "job").
 		From("gophers")
 
 	if params.Name.Valid {
-		queryBuilder.Where(sq.Eq{"name": params.Name.String})
+		qb = qb.Where(sq.Eq{"name": params.Name.String})
 	}
 
 	if params.Job.Valid {
-		queryBuilder.Where(sq.Eq{"name": params.Name.String})
+		qb = qb.Where(sq.Eq{"job": params.Job.String})
 	}
 
-	queryBuilder.OrderBy("id")
+	qb = qb.OrderBy("id")
 
-	query, args, err := queryBuilder.ToSql()
+	query, args, err := qb.ToSql()
 	if err != nil {
 		return nil, err
 	}

@@ -19,6 +19,8 @@ config:
     title: Test dashboard title
   seed:
     gophers:
-      alice: architect
-      bob: builder
-      carl: carpenter
+      alice: frontend
+      bob: backend
+      carl: backend
+      dan: frontend
+      elvis: backend
