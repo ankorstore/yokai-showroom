@@ -25,6 +25,3 @@ test:
 
 lint:
 	golangci-lint run -v
-
-%:
-    @:
