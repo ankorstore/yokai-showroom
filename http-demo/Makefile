@@ -16,7 +16,6 @@ fresh:
 	docker compose down --remove-orphans
 	docker compose build --no-cache
 	docker compose up -d --build -V
-	docker compose exec http-demo-app go run . migrate reset
 	docker compose exec http-demo-app go run . migrate up
 
 migrate:
