@@ -26,18 +26,18 @@ func NewGetGopherHandler(service *service.GopherService) *GetGopherHandler {
 // Handle handles the http request.
 func (h *GetGopherHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
+		gopherId, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid gopher id: %v", err))
 		}
 
-		gopher, err := h.service.Get(c.Request().Context(), id)
+		gopher, err := h.service.Get(c.Request().Context(), gopherId)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot get gopher with id %d: %v", id, err))
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", gopherId, err))
 			}
 
-			return fmt.Errorf("cannot get gopher: %w", err)
+			return err
 		}
 
 		return c.JSON(http.StatusOK, gopher)

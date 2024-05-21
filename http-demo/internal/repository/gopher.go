@@ -107,6 +107,9 @@ func (r *GopherRepository) Create(ctx context.Context, params GopherRepositoryCr
 	defer r.mutex.Unlock()
 
 	query, args, err := sq.Insert("gophers").Columns("name", "job").Values(params.Name, params.Job).ToSql()
+	if err != nil {
+		return 0, err
+	}
 
 	result, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {

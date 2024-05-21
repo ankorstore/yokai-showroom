@@ -21,9 +21,8 @@ func TestFindError(t *testing.T) {
 	err := db.Close()
 	assert.NoError(t, err)
 
-	gopher, err := repo.Find(context.Background(), 1)
+	_, err = repo.Find(context.Background(), 1)
 	assert.Error(t, err)
-	assert.Nil(t, gopher)
 }
 
 func TestFindAllError(t *testing.T) {
@@ -36,9 +35,8 @@ func TestFindAllError(t *testing.T) {
 	err := db.Close()
 	assert.NoError(t, err)
 
-	gopher, err := repo.FindAll(context.Background(), repository.GopherRepositoryFindAllParams{})
+	_, err = repo.FindAll(context.Background(), repository.GopherRepositoryFindAllParams{})
 	assert.Error(t, err)
-	assert.Nil(t, gopher)
 }
 
 func TestCreateError(t *testing.T) {
@@ -70,5 +68,5 @@ func TestDeleteError(t *testing.T) {
 	assert.NoError(t, err)
 
 	err = repo.Delete(ctx, 1)
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }

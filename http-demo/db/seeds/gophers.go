@@ -3,6 +3,7 @@ package seeds
 import (
 	"context"
 	"database/sql"
+	"sort"
 
 	"github.com/ankorstore/yokai/config"
 )
@@ -22,12 +23,29 @@ func (s *GophersSeed) Name() string {
 }
 
 func (s *GophersSeed) Run(ctx context.Context, db *sql.DB) error {
-	for name, job := range s.config.GetStringMapString("config.seed.gophers") {
-		_, err := db.ExecContext(ctx, "INSERT INTO gophers (name, job) VALUES (?, ?)", name, job)
-		if err != nil {
-			return err
-		}
+	var txErr error
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	seedData := s.config.GetStringMapString("config.seed.gophers")
+
+	names := make([]string, 0, len(seedData))
+	for name := range seedData {
+		names = append(names, name)
+	}
+
+	sort.Strings(names)
+
+	for _, name := range names {
+		_, txErr = tx.ExecContext(ctx, "INSERT INTO gophers (name, job) VALUES (?, ?)", name, seedData[name])
+	}
+
+	if txErr != nil {
+		return tx.Rollback()
+	}
+
+	return tx.Commit()
 }

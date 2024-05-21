@@ -26,18 +26,25 @@ func NewDeleteGopherHandler(service *service.GopherService) *DeleteGopherHandler
 // Handle handles the http request.
 func (h *DeleteGopherHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
+		ctx := c.Request().Context()
+
+		gopherId, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid gopher id: %v", err))
 		}
 
-		err = h.service.Delete(c.Request().Context(), id)
+		_, err = h.service.Get(ctx, gopherId)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", id, err))
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", gopherId, err))
 			}
 
-			return fmt.Errorf("cannot delete gopher: %w", err)
+			return err
+		}
+
+		err = h.service.Delete(ctx, gopherId)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("cannot delete gopher with id: %d, %v", gopherId, err))
 		}
 
 		return c.NoContent(http.StatusNoContent)

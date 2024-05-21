@@ -25,7 +25,7 @@ func (h *ListGophersHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		gophers, err := h.service.List(c.Request().Context(), c.QueryParam("name"), c.QueryParam("job"))
 		if err != nil {
-			return fmt.Errorf("cannot list gophers: %w", err)
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("cannot list gophers: %v", err))
 		}
 
 		return c.JSON(http.StatusOK, gophers)

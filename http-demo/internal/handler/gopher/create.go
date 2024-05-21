@@ -45,7 +45,7 @@ func (h *CreateGopherHandler) Handle() echo.HandlerFunc {
 		gopher, err := h.service.Get(ctx, gopherId)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("owner with id %d not found", gopherId))
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", gopherId, err))
 			}
 
 			return err
