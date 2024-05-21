@@ -32,10 +32,7 @@ var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
 
 // Run starts the application, with a provided [context.Context].
 func Run(ctx context.Context) {
-	Bootstrapper.WithContext(ctx).RunApp(
-		// run SQL migrations
-		fxsql.RunFxSQLMigration("up"),
-	)
+	Bootstrapper.WithContext(ctx).RunApp()
 }
 
 // RunTest starts the application in test mode, with an optional list of [fx.Option].

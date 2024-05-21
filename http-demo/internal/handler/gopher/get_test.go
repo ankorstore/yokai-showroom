@@ -30,7 +30,7 @@ func TestGetGopherHandler(t *testing.T) {
 		fx.Populate(&httpServer, &logBuffer, &traceExporter, &db),
 	)
 
-	t.Run("will 200 on success", func(t *testing.T) {
+	t.Run("should 200 on success", func(t *testing.T) {
 		// reset test buffers
 		logBuffer.Reset()
 		traceExporter.Reset()
@@ -68,7 +68,7 @@ func TestGetGopherHandler(t *testing.T) {
 		)
 	})
 
-	t.Run("will 400 on invalid id", func(t *testing.T) {
+	t.Run("should 400 on invalid id", func(t *testing.T) {
 		// reset test buffers
 		logBuffer.Reset()
 		traceExporter.Reset()
@@ -99,7 +99,7 @@ func TestGetGopherHandler(t *testing.T) {
 		)
 	})
 
-	t.Run("will 404 on non existing id", func(t *testing.T) {
+	t.Run("should 404 on non existing id", func(t *testing.T) {
 		// reset test buffers
 		logBuffer.Reset()
 		traceExporter.Reset()
@@ -130,7 +130,7 @@ func TestGetGopherHandler(t *testing.T) {
 		)
 	})
 
-	t.Run("will 500 on internal server error", func(t *testing.T) {
+	t.Run("should 500 on internal server error", func(t *testing.T) {
 		// reset test buffers
 		logBuffer.Reset()
 		traceExporter.Reset()

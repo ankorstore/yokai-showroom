@@ -68,12 +68,14 @@ modules:
       exclude:
         - "connection:ping"
         - "connection:reset-session"
+        - "connection:close"
     trace:
       enabled: true
       arguments: true
       exclude:
         - "connection:ping"
         - "connection:reset-session"
+        - "connection:close"
   log:
     level: debug
 config:

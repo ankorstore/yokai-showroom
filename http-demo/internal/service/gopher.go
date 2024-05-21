@@ -35,7 +35,7 @@ func NewGopherService(config *config.Config, repository *repository.GopherReposi
 	}
 }
 
-// List returns a list of all gophers.
+// List returns a list of all gophers, filterable by name and job.
 func (s *GopherService) List(ctx context.Context, name string, job string) ([]model.Gopher, error) {
 	GopherServiceCounter.WithLabelValues("list").Inc()
 
