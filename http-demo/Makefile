@@ -1,4 +1,4 @@
-.PHONY: up down fresh logs test lint migrate sqlc
+.PHONY: up down fresh logs test lint
 
 up:
 	@if [ ! -f .env ]; then \
@@ -25,9 +25,6 @@ test:
 
 lint:
 	golangci-lint run -v
-
-sqlc:
-	docker run --rm -u $$(id -u):$$(id -g) -v ./:/src -w /src sqlc/sqlc $(filter-out $@,$(MAKECMDGOALS))
 
 %:
     @:
