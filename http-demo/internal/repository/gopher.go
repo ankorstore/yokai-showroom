@@ -2,75 +2,139 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"gorm.io/gorm"
 )
 
 // GopherRepository is the repository to handle the [model.Gopher] model database interactions.
 type GopherRepository struct {
 	mutex sync.Mutex
-	db    *gorm.DB
+	db    *sql.DB
 }
 
 // NewGopherRepository returns a new [GopherRepository].
-func NewGopherRepository(db *gorm.DB) *GopherRepository {
+func NewGopherRepository(db *sql.DB) *GopherRepository {
 	return &GopherRepository{
 		db: db,
 	}
 }
 
-// Find finds a [model.Gopher] by id.
-func (r *GopherRepository) Find(ctx context.Context, id int) (*model.Gopher, error) {
+// Find finds a gopher by id.
+func (r *GopherRepository) Find(ctx context.Context, id int) (model.Gopher, error) {
 	var gopher model.Gopher
 
-	res := r.db.WithContext(ctx).Take(&gopher, id)
-	if res.Error != nil {
-		return nil, res.Error
+	query, args, err := sq.
+		Select("id", "name", "job").
+		From("gophers").
+		Where(sq.Eq{"id": id}).
+		Limit(1).
+		ToSql()
+	if err != nil {
+		return gopher, err
 	}
 
-	return &gopher, nil
+	row := r.db.QueryRowContext(ctx, query, args...)
+
+	err = row.Scan(&gopher.ID, &gopher.Name, &gopher.Job)
+
+	return gopher, err
 }
 
-// FindAll finds all [model.Gopher].
-func (r *GopherRepository) FindAll(ctx context.Context) ([]model.Gopher, error) {
-	var gophers []model.Gopher
+// GopherRepositoryFindAllParams is a parameter for FindAll.
+type GopherRepositoryFindAllParams struct {
+	Name sql.NullString
+	Job  sql.NullString
+}
 
-	res := r.db.WithContext(ctx).Find(&gophers)
-	if res.Error != nil {
-		return nil, res.Error
+// FindAll finds all gophers.
+func (r *GopherRepository) FindAll(ctx context.Context, params GopherRepositoryFindAllParams) ([]model.Gopher, error) {
+	qb := sq.
+		Select("id", "name", "job").
+		From("gophers")
+
+	if params.Name.Valid {
+		qb = qb.Where(sq.Eq{"name": params.Name.String})
+	}
+
+	if params.Job.Valid {
+		qb = qb.Where(sq.Eq{"job": params.Job.String})
+	}
+
+	qb = qb.OrderBy("id")
+
+	query, args, err := qb.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	var gophers []model.Gopher
+	for rows.Next() {
+		var gopher model.Gopher
+		if err = rows.Scan(&gopher.ID, &gopher.Name, &gopher.Job); err != nil {
+			return nil, err
+		}
+		gophers = append(gophers, gopher)
+	}
+
+	if err = rows.Close(); err != nil {
+		return nil, err
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return gophers, nil
 }
 
-// Create creates a new [model.Gopher].
-func (r *GopherRepository) Create(ctx context.Context, gopher *model.Gopher) error {
-	r.mutex.Lock()
-	defer r.mutex.Unlock()
-
-	res := r.db.WithContext(ctx).Create(gopher)
-
-	return res.Error
+// GopherRepositoryCreateParams is a parameter for Create.
+type GopherRepositoryCreateParams struct {
+	Name string
+	Job  sql.NullString
 }
 
-// Update updates an existing [model.Gopher].
-func (r *GopherRepository) Update(ctx context.Context, gopher *model.Gopher, update *model.Gopher) error {
+// Create creates a new gopher and returns its id.
+func (r *GopherRepository) Create(ctx context.Context, params GopherRepositoryCreateParams) (int, error) {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 
-	res := r.db.WithContext(ctx).Model(gopher).Updates(update)
+	query, args, err := sq.Insert("gophers").Columns("name", "job").Values(params.Name, params.Job).ToSql()
+	if err != nil {
+		return 0, err
+	}
 
-	return res.Error
+	result, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }
 
-// Delete deletes an existing [model.Gopher].
-func (r *GopherRepository) Delete(ctx context.Context, gopher *model.Gopher) error {
+// Delete deletes an existing gopher by id.
+func (r *GopherRepository) Delete(ctx context.Context, id int) error {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 
-	res := r.db.WithContext(ctx).Delete(gopher)
+	query, args, err := sq.Delete("gophers").Where(sq.Eq{"id": id}).ToSql()
+	if err != nil {
+		return err
+	}
 
-	return res.Error
+	_, err = r.db.ExecContext(ctx, query, args...)
+
+	return err
 }

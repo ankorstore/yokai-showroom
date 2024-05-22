@@ -56,14 +56,26 @@ modules:
       templates:
         enabled: true
         path: templates/*.html
-  orm:
+  sql:
+    driver: mysql
+    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
+    migrations:
+      path: db/migrations
     log:
       enabled: true
-      level: info
-      values: true
+      level: debug
+      arguments: true
+      exclude:
+        - "connection:ping"
+        - "connection:reset-session"
+        - "connection:close"
     trace:
       enabled: true
-      values: true
+      arguments: true
+      exclude:
+        - "connection:ping"
+        - "connection:reset-session"
+        - "connection:close"
   log:
     level: debug
 config:

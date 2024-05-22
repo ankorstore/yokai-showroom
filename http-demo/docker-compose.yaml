@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: dev.Dockerfile
       context: .
+    depends_on:
+      - http-demo-database
     networks:
       - http-demo
     ports:
@@ -25,6 +27,10 @@ services:
     restart: always
     networks:
       - http-demo
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
     volumes:
       - http-demo-database-data:/var/lib/mysql
     env_file:

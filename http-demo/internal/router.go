@@ -22,7 +22,6 @@ func Router() fx.Option {
 				fxhttpserver.NewHandlerRegistration("GET", "", gopher.NewListGophersHandler),
 				fxhttpserver.NewHandlerRegistration("POST", "", gopher.NewCreateGopherHandler),
 				fxhttpserver.NewHandlerRegistration("GET", "/:id", gopher.NewGetGopherHandler),
-				fxhttpserver.NewHandlerRegistration("PATCH", "/:id", gopher.NewUpdateGopherHandler),
 				fxhttpserver.NewHandlerRegistration("DELETE", "/:id", gopher.NewDeleteGopherHandler),
 			},
 		),

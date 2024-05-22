@@ -1,103 +1,158 @@
 package gopher_test
 
 import (
-	"context"
+	"database/sql"
+	"github.com/ankorstore/yokai/fxsql"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
-	"gorm.io/gorm"
 )
 
-func TestDeleteGopherHandlerSuccess(t *testing.T) {
+func TestDeleteGopherHandler(t *testing.T) {
+	var db *sql.DB
 	var httpServer *echo.Echo
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
-	var repository *repository.GopherRepository
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter, &repository))
+	internal.RunTest(
+		t,
+		fxsql.RunFxSQLSeeds(),
+		fx.Populate(&httpServer, &logBuffer, &traceExporter, &db),
+	)
 
-	// populate database
-	err := repository.Create(context.Background(), &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
+	t.Run("should 204 on success", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
+
+		// [DELETE] /gophers/1 response assertion
+		req := httptest.NewRequest(http.MethodDelete, "/gophers/1", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusNoContent, rec.Code)
+
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodDelete,
+			"uri":     "/gophers/1",
+			"status":  http.StatusNoContent,
+			"message": "request logger",
+		})
+
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"DELETE /gophers/:id",
+			semconv.HTTPMethod(http.MethodDelete),
+			semconv.HTTPRoute("/gophers/1"),
+			semconv.HTTPStatusCode(http.StatusNoContent),
+		)
 	})
-	assert.NoError(t, err)
 
-	// [DELETE] /gophers/1 response assertion
-	req := httptest.NewRequest(http.MethodDelete, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+	t.Run("should 400 on invalid id", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-	assert.Equal(t, http.StatusNoContent, rec.Code)
+		// [DELETE] /gophers/invalid response assertion
+		req := httptest.NewRequest(http.MethodDelete, "/gophers/invalid", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	// log assertion
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called delete gopher",
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodDelete,
+			"uri":     "/gophers/invalid",
+			"status":  http.StatusBadRequest,
+			"message": "request logger",
+		})
+
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"DELETE /gophers/:id",
+			semconv.HTTPMethod(http.MethodDelete),
+			semconv.HTTPRoute("/gophers/invalid"),
+			semconv.HTTPStatusCode(http.StatusBadRequest),
+		)
 	})
 
-	// trace assertion
-	tracetest.AssertHasTraceSpan(t, traceExporter, "delete gopher service")
-}
+	t.Run("should 404 on non existing id", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-func TestDeleteGopherHandlerBadRequestErrorOnInvalidId(t *testing.T) {
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+		// [DELETE] /gophers/99 response assertion
+		req := httptest.NewRequest(http.MethodDelete, "/gophers/99", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter))
+		assert.Equal(t, http.StatusNotFound, rec.Code)
 
-	// [DELETE] /gophers/invalid response assertion
-	req := httptest.NewRequest(http.MethodDelete, "/gophers/invalid", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodDelete,
+			"uri":     "/gophers/99",
+			"status":  http.StatusNotFound,
+			"message": "request logger",
+		})
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	assert.Contains(t, rec.Body.String(), "invalid gopher id")
-}
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"DELETE /gophers/:id",
+			semconv.HTTPMethod(http.MethodDelete),
+			semconv.HTTPRoute("/gophers/99"),
+			semconv.HTTPStatusCode(http.StatusNotFound),
+		)
+	})
 
-func TestDeleteGopherHandlerNotFoundErrorOnMissingId(t *testing.T) {
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+	t.Run("should 500 on internal server error", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter))
+		// drop table for failure
+		_, err := db.Exec("DROP TABLE gophers")
+		assert.NoError(t, err)
 
-	// [DELETE] /gophers/1 response assertion, database not populated
-	req := httptest.NewRequest(http.MethodDelete, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+		// [DELETE] /gophers/1 response assertion
+		req := httptest.NewRequest(http.MethodDelete, "/gophers/1", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	assert.Equal(t, http.StatusNotFound, rec.Code)
-	assert.Contains(t, rec.Body.String(), "cannot get gopher with id 1")
-}
+		assert.Equal(t, http.StatusInternalServerError, rec.Code)
 
-func TestDeleteGopherHandlerInternalServerErrorOnMissingTable(t *testing.T) {
-	var db *gorm.DB
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodDelete,
+			"uri":     "/gophers/1",
+			"status":  http.StatusInternalServerError,
+			"message": "request logger",
+		})
 
-	internal.RunTest(t, fx.Populate(&db, &httpServer, &logBuffer, &traceExporter))
-
-	// drop table for failure
-	err := db.Migrator().DropTable(&model.Gopher{})
-	assert.NoError(t, err)
-
-	// [DELETE] /gophers/1 response assertion
-	req := httptest.NewRequest(http.MethodDelete, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
-
-	assert.Equal(t, http.StatusInternalServerError, rec.Code)
-	assert.Contains(t, rec.Body.String(), "cannot delete gopher")
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"DELETE /gophers/:id",
+			semconv.HTTPMethod(http.MethodDelete),
+			semconv.HTTPRoute("/gophers/1"),
+			semconv.HTTPStatusCode(http.StatusInternalServerError),
+		)
+	})
 }

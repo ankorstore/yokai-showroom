@@ -2,169 +2,219 @@ package service_test
 
 import (
 	"context"
+	"database/sql"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai/fxsql"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/testutil"
+	"go.uber.org/fx"
+	"strings"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
-	"github.com/ankorstore/yokai/log"
-	"github.com/ankorstore/yokai/log/logtest"
-	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/fx"
 )
 
-func TestList(t *testing.T) {
-	var repo *repository.GopherRepository
-	var svc *service.GopherService
-	var logger *log.Logger
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+func TestGet(t *testing.T) {
+	var db *sql.DB
+	var gopherService *service.GopherService
+	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&repo, &svc, &logger, &logBuffer, &traceExporter))
+	t.Run("should succeed", func(t *testing.T) {
+		// reset
+		service.GopherServiceCounter.Reset()
 
-	ctx := logger.WithContext(context.Background())
+		// run test
+		internal.RunTest(
+			t,
+			fxsql.RunFxSQLSeeds(),
+			fx.Populate(&db, &gopherService, &metricsRegistry),
+		)
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
+		// result assertion
+		gopher, err := gopherService.Get(context.Background(), 1)
+		assert.NoError(t, err)
 
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
+		assert.Equal(t, "alice", gopher.Name)
+		assert.Equal(t, "frontend", gopher.Job.String)
 
-	foundGophers, err := svc.List(ctx)
-	assert.NoError(t, err)
-	assert.Len(t, foundGophers, 1)
+		// metrics assertion
+		expectedMetric := `
+			# HELP gophers_service_operations_total Number of operations on the GopherService
+			# TYPE gophers_service_operations_total counter
+			gophers_service_operations_total{operation="get"} 1
+		`
 
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called list gophers",
+		err = testutil.GatherAndCompare(
+			metricsRegistry,
+			strings.NewReader(expectedMetric),
+			"gophers_service_operations_total",
+		)
+		assert.NoError(t, err)
 	})
 
-	tracetest.AssertHasTraceSpan(t, traceExporter, "list gophers service")
+	t.Run("should fail", func(t *testing.T) {
+		// run test
+		internal.RunTest(t, fx.Populate(&db, &gopherService))
+
+		// close db
+		err := db.Close()
+		assert.NoError(t, err)
+
+		// result assertion
+		_, err = gopherService.Get(context.Background(), 1)
+		assert.Error(t, err)
+	})
 }
 
-func TestGet(t *testing.T) {
-	var repo *repository.GopherRepository
-	var svc *service.GopherService
-	var logger *log.Logger
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+func TestList(t *testing.T) {
+	var db *sql.DB
+	var gopherService *service.GopherService
+	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&repo, &svc, &logger, &logBuffer, &traceExporter))
+	t.Run("should succeed", func(t *testing.T) {
+		// reset
+		service.GopherServiceCounter.Reset()
 
-	ctx := logger.WithContext(context.Background())
+		// run test
+		internal.RunTest(
+			t,
+			fxsql.RunFxSQLSeeds(),
+			fx.Populate(&db, &gopherService, &metricsRegistry),
+		)
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
+		// result assertion
+		gophers, err := gopherService.List(context.Background(), "alice", "frontend")
+		assert.NoError(t, err)
 
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
+		assert.Len(t, gophers, 1)
+		assert.Equal(t, "alice", gophers[0].Name)
+		assert.Equal(t, "frontend", gophers[0].Job.String)
 
-	foundGopher, err := svc.Get(ctx, 1)
-	assert.NoError(t, err)
-	assert.Equal(t, "gopher 1", foundGopher.Name)
-	assert.Equal(t, "job 1", foundGopher.Job)
+		// metrics assertion
+		expectedMetric := `
+			# HELP gophers_service_operations_total Number of operations on the GopherService
+			# TYPE gophers_service_operations_total counter
+			gophers_service_operations_total{operation="list"} 1
+		`
 
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called get gopher",
+		err = testutil.GatherAndCompare(
+			metricsRegistry,
+			strings.NewReader(expectedMetric),
+			"gophers_service_operations_total",
+		)
+		assert.NoError(t, err)
 	})
 
-	tracetest.AssertHasTraceSpan(t, traceExporter, "get gopher service")
+	t.Run("should fail", func(t *testing.T) {
+		// run test
+		internal.RunTest(t, fx.Populate(&db, &gopherService))
+
+		// close db
+		err := db.Close()
+		assert.NoError(t, err)
+
+		// result assertion
+		_, err = gopherService.List(context.Background(), "", "")
+		assert.Error(t, err)
+	})
 }
 
 func TestCreate(t *testing.T) {
-	var svc *service.GopherService
-	var logger *log.Logger
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+	var db *sql.DB
+	var gopherService *service.GopherService
+	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&svc, &logger, &logBuffer, &traceExporter))
+	t.Run("should succeed", func(t *testing.T) {
+		// reset
+		service.GopherServiceCounter.Reset()
 
-	ctx := logger.WithContext(context.Background())
+		// run test
+		internal.RunTest(
+			t,
+			fx.Populate(&db, &gopherService, &metricsRegistry),
+		)
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
+		// result assertion
+		gopherId, err := gopherService.Create(context.Background(), "alice", "frontend")
+		assert.NoError(t, err)
 
-	err := svc.Create(ctx, gopher)
-	assert.NoError(t, err)
+		assert.Equal(t, 1, gopherId)
 
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called create gopher",
+		// metrics assertion
+		expectedMetric := `
+			# HELP gophers_service_operations_total Number of operations on the GopherService
+			# TYPE gophers_service_operations_total counter
+			gophers_service_operations_total{operation="create"} 1
+		`
+
+		err = testutil.GatherAndCompare(
+			metricsRegistry,
+			strings.NewReader(expectedMetric),
+			"gophers_service_operations_total",
+		)
+		assert.NoError(t, err)
 	})
 
-	tracetest.AssertHasTraceSpan(t, traceExporter, "create gopher service")
+	t.Run("should fail", func(t *testing.T) {
+		// run test
+		internal.RunTest(t, fx.Populate(&db, &gopherService))
+
+		// close db
+		err := db.Close()
+		assert.NoError(t, err)
+
+		// result assertion
+		_, err = gopherService.Create(context.Background(), "", "")
+		assert.Error(t, err)
+	})
 }
 
 func TestDelete(t *testing.T) {
-	var repo *repository.GopherRepository
-	var svc *service.GopherService
-	var logger *log.Logger
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+	var db *sql.DB
+	var gopherService *service.GopherService
+	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&repo, &svc, &logger, &logBuffer, &traceExporter))
+	t.Run("should succeed", func(t *testing.T) {
+		// reset
+		service.GopherServiceCounter.Reset()
 
-	ctx := logger.WithContext(context.Background())
+		// run test
+		internal.RunTest(
+			t,
+			fxsql.RunFxSQLSeeds(),
+			fx.Populate(&db, &gopherService, &metricsRegistry),
+		)
 
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
+		// result assertion
+		err := gopherService.Delete(context.Background(), 1)
+		assert.NoError(t, err)
 
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
+		// metrics assertion
+		expectedMetric := `
+			# HELP gophers_service_operations_total Number of operations on the GopherService
+			# TYPE gophers_service_operations_total counter
+			gophers_service_operations_total{operation="delete"} 1
+		`
 
-	err = svc.Delete(ctx, 1)
-	assert.NoError(t, err)
-
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called delete gopher",
+		err = testutil.GatherAndCompare(
+			metricsRegistry,
+			strings.NewReader(expectedMetric),
+			"gophers_service_operations_total",
+		)
+		assert.NoError(t, err)
 	})
 
-	tracetest.AssertHasTraceSpan(t, traceExporter, "delete gopher service")
-}
+	t.Run("should fail", func(t *testing.T) {
+		// run test
+		internal.RunTest(t, fx.Populate(&db, &gopherService))
 
-func TestUpdate(t *testing.T) {
-	var repo *repository.GopherRepository
-	var svc *service.GopherService
-	var logger *log.Logger
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+		// close db
+		err := db.Close()
+		assert.NoError(t, err)
 
-	internal.RunTest(t, fx.Populate(&repo, &svc, &logger, &logBuffer, &traceExporter))
-
-	ctx := logger.WithContext(context.Background())
-
-	gopher := &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
-	}
-
-	err := repo.Create(ctx, gopher)
-	assert.NoError(t, err)
-
-	updatedGopher, err := svc.Update(ctx, 1, &model.Gopher{
-		Name: "new gopher 1",
-		Job:  "new job 1",
+		// result assertion
+		err = gopherService.Delete(context.Background(), 1)
+		assert.Error(t, err)
 	})
-	assert.NoError(t, err)
-	assert.Equal(t, "new gopher 1", updatedGopher.Name)
-	assert.Equal(t, "new job 1", updatedGopher.Job)
-
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called update gopher",
-	})
-
-	tracetest.AssertHasTraceSpan(t, traceExporter, "update gopher service")
 }

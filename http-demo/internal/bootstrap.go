@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
+	"github.com/ankorstore/yokai-showroom/http-demo/db/seeds"
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxhttpserver"
-	"github.com/ankorstore/yokai/fxorm"
+	"github.com/ankorstore/yokai/fxsql"
 	"go.uber.org/fx"
 )
 
@@ -23,7 +23,7 @@ var RootDir string
 var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
 	// modules registration
 	fxhttpserver.FxHttpServerModule,
-	fxorm.FxOrmModule,
+	fxsql.FxSQLModule,
 	// dependencies registration
 	Register(),
 	// routing registration
@@ -32,10 +32,7 @@ var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
 
 // Run starts the application, with a provided [context.Context].
 func Run(ctx context.Context) {
-	Bootstrapper.WithContext(ctx).RunApp(
-		// run orm migrations
-		fxorm.RunFxOrmAutoMigrate(&model.Gopher{}),
-	)
+	Bootstrapper.WithContext(ctx).RunApp()
 }
 
 // RunTest starts the application in test mode, with an optional list of [fx.Option].
@@ -44,15 +41,16 @@ func RunTest(tb testing.TB, options ...fx.Option) {
 
 	// configs
 	tb.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", RootDir))
-
-	// templates
+	tb.Setenv("MODULES_SQL_MIGRATIONS_PATH", fmt.Sprintf("%s/db/migrations", RootDir))
 	tb.Setenv("MODULES_HTTP_SERVER_TEMPLATES_ENABLED", "true")
 	tb.Setenv("MODULES_HTTP_SERVER_TEMPLATES_PATH", fmt.Sprintf("%s/templates/*.html", RootDir))
 
 	Bootstrapper.RunTestApp(
 		tb,
-		// run orm migrations
-		fxorm.RunFxOrmAutoMigrate(&model.Gopher{}),
+		// run SQL migrations
+		fxsql.RunFxSQLMigration("up"),
+		// register seeds
+		fxsql.AsSQLSeeds(seeds.NewGophersSeed),
 		// apply per test options
 		fx.Options(options...),
 	)

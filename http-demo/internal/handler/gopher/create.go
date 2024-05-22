@@ -1,13 +1,19 @@
 package gopher
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
 	"github.com/labstack/echo/v4"
 )
+
+type CreateGopherParams struct {
+	Name string `json:"name" form:"name" query:"name"`
+	Job  string `json:"job" form:"job" query:"job"`
+}
 
 // CreateGopherHandler is the http handler to create a gopher.
 type CreateGopherHandler struct {
@@ -24,14 +30,25 @@ func NewCreateGopherHandler(service *service.GopherService) *CreateGopherHandler
 // Handle handles the http request.
 func (h *CreateGopherHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		gopher := new(model.Gopher)
-		if err := c.Bind(gopher); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("cannot bind gopher: %v", err))
+		ctx := c.Request().Context()
+
+		params := new(CreateGopherParams)
+		if err := c.Bind(params); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid parameters: %v", err))
 		}
 
-		err := h.service.Create(c.Request().Context(), gopher)
+		gopherId, err := h.service.Create(ctx, params.Name, params.Job)
 		if err != nil {
-			return fmt.Errorf("cannot create gopher: %w", err)
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("cannot create gopher: %v", err))
+		}
+
+		gopher, err := h.service.Get(ctx, gopherId)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", gopherId, err))
+			}
+
+			return err
 		}
 
 		return c.JSON(http.StatusCreated, gopher)

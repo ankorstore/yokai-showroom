@@ -1,0 +1,18 @@
+@address=http://localhost:8080
+
+### List gophers
+GET {{address}}/gophers?name=foo
+
+### Get gophers
+GET {{address}}/gophers/1
+
+### Create gopher
+POST {{address}}/gophers
+Content-Type: application/json
+
+{
+"name": "ccc"
+}
+
+### Delete gophers
+DELETE {{address}}/gophers/1

@@ -1,6 +1,7 @@
 package gopher
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -8,7 +9,6 @@ import (
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 // DeleteGopherHandler is the http handler to delete a gopher.
@@ -26,18 +26,25 @@ func NewDeleteGopherHandler(service *service.GopherService) *DeleteGopherHandler
 // Handle handles the http request.
 func (h *DeleteGopherHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
+		ctx := c.Request().Context()
+
+		gopherId, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid gopher id: %v", err))
 		}
 
-		err = h.service.Delete(c.Request().Context(), id)
+		_, err = h.service.Get(ctx, gopherId)
 		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot get gopher with id %d: %v", id, err))
+			if errors.Is(err, sql.ErrNoRows) {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("cannot find gopher with id %d: %v", gopherId, err))
 			}
 
-			return fmt.Errorf("cannot delete gopher: %w", err)
+			return err
+		}
+
+		err = h.service.Delete(ctx, gopherId)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("cannot delete gopher with id: %d, %v", gopherId, err))
 		}
 
 		return c.NoContent(http.StatusNoContent)

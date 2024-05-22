@@ -1,3 +1,5 @@
+.PHONY: up down fresh logs test lint
+
 up:
 	@if [ ! -f .env ]; then \
         cp .env.example .env; \
@@ -14,6 +16,10 @@ fresh:
 	docker compose down --remove-orphans
 	docker compose build --no-cache
 	docker compose up -d --build -V
+	docker compose exec http-demo-app go run . migrate up
+
+migrate:
+	docker compose exec http-demo-app go run . migrate up
 
 logs:
 	docker compose logs -f

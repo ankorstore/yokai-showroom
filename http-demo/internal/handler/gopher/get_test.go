@@ -1,111 +1,167 @@
 package gopher_test
 
 import (
-	"context"
+	"database/sql"
 	"encoding/json"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
+	"github.com/ankorstore/yokai/fxsql"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
-	"gorm.io/gorm"
 )
 
-func TestGetGopherHandlerSuccess(t *testing.T) {
+func TestGetGopherHandler(t *testing.T) {
+	var db *sql.DB
 	var httpServer *echo.Echo
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
-	var repository *repository.GopherRepository
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter, &repository))
+	internal.RunTest(
+		t,
+		fxsql.RunFxSQLSeeds(),
+		fx.Populate(&httpServer, &logBuffer, &traceExporter, &db),
+	)
 
-	// populate database
-	err := repository.Create(context.Background(), &model.Gopher{
-		Name: "gopher 1",
-		Job:  "job 1",
+	t.Run("should 200 on success", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
+
+		// [GET] /gophers/1 response assertion
+		req := httptest.NewRequest(http.MethodGet, "/gophers/1", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+
+		var gopher model.Gopher
+		err := json.Unmarshal(rec.Body.Bytes(), &gopher)
+		assert.NoError(t, err)
+
+		assert.Equal(t, gopher.Name, "alice")
+		assert.Equal(t, gopher.Job.String, "frontend")
+
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodGet,
+			"uri":     "/gophers/1",
+			"status":  http.StatusOK,
+			"message": "request logger",
+		})
+
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"GET /gophers/:id",
+			semconv.HTTPMethod(http.MethodGet),
+			semconv.HTTPRoute("/gophers/1"),
+			semconv.HTTPStatusCode(http.StatusOK),
+		)
 	})
-	assert.NoError(t, err)
 
-	// [GET] /gophers/1 response assertion
-	req := httptest.NewRequest(http.MethodGet, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+	t.Run("should 400 on invalid id", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-	assert.Equal(t, http.StatusOK, rec.Code)
+		// [GET] /gophers/invalid response assertion
+		req := httptest.NewRequest(http.MethodGet, "/gophers/invalid", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	var gopher *model.Gopher
-	err = json.Unmarshal(rec.Body.Bytes(), &gopher)
-	assert.NoError(t, err)
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
 
-	assert.Equal(t, gopher.Name, "gopher 1")
-	assert.Equal(t, gopher.Job, "job 1")
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodGet,
+			"uri":     "/gophers/invalid",
+			"status":  http.StatusBadRequest,
+			"message": "request logger",
+		})
 
-	// log assertion
-	logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
-		"level":   "info",
-		"message": "called get gopher",
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"GET /gophers/:id",
+			semconv.HTTPMethod(http.MethodGet),
+			semconv.HTTPRoute("/gophers/invalid"),
+			semconv.HTTPStatusCode(http.StatusBadRequest),
+		)
 	})
 
-	// trace assertion
-	tracetest.AssertHasTraceSpan(t, traceExporter, "get gopher service")
-}
+	t.Run("should 404 on non existing id", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-func TestGetGopherHandlerBadRequestErrorOnInvalidId(t *testing.T) {
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+		// [GET] /gophers/99 response assertion
+		req := httptest.NewRequest(http.MethodGet, "/gophers/99", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter))
+		assert.Equal(t, http.StatusNotFound, rec.Code)
 
-	// [GET] /gophers/invalid response assertion
-	req := httptest.NewRequest(http.MethodGet, "/gophers/invalid", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodGet,
+			"uri":     "/gophers/99",
+			"status":  http.StatusNotFound,
+			"message": "request logger",
+		})
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	assert.Contains(t, rec.Body.String(), "invalid gopher id")
-}
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"GET /gophers/:id",
+			semconv.HTTPMethod(http.MethodGet),
+			semconv.HTTPRoute("/gophers/99"),
+			semconv.HTTPStatusCode(http.StatusNotFound),
+		)
+	})
 
-func TestGetGopherHandlerNotFoundErrorOnMissingId(t *testing.T) {
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+	t.Run("should 500 on internal server error", func(t *testing.T) {
+		// reset test buffers
+		logBuffer.Reset()
+		traceExporter.Reset()
 
-	internal.RunTest(t, fx.Populate(&httpServer, &logBuffer, &traceExporter))
+		// drop table for failure
+		_, err := db.Exec("DROP TABLE gophers")
+		assert.NoError(t, err)
 
-	// [GET] /gophers/1 response assertion, database not populated
-	req := httptest.NewRequest(http.MethodGet, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
+		// [GET] /gophers/1 response assertion
+		req := httptest.NewRequest(http.MethodGet, "/gophers/1", nil)
+		rec := httptest.NewRecorder()
+		httpServer.ServeHTTP(rec, req)
 
-	assert.Equal(t, http.StatusNotFound, rec.Code)
-	assert.Contains(t, rec.Body.String(), "cannot get gopher with id 1")
-}
+		assert.Equal(t, http.StatusInternalServerError, rec.Code)
 
-func TestGetGopherHandlerInternalServerErrorOnMissingTable(t *testing.T) {
-	var db *gorm.DB
-	var httpServer *echo.Echo
-	var logBuffer logtest.TestLogBuffer
-	var traceExporter tracetest.TestTraceExporter
+		// log assertion
+		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
+			"level":   "info",
+			"method":  http.MethodGet,
+			"uri":     "/gophers/1",
+			"status":  http.StatusInternalServerError,
+			"message": "request logger",
+		})
 
-	internal.RunTest(t, fx.Populate(&db, &httpServer, &logBuffer, &traceExporter))
-
-	// drop table for failure
-	err := db.Migrator().DropTable(&model.Gopher{})
-	assert.NoError(t, err)
-
-	// [GET] /gophers/1 response assertion
-	req := httptest.NewRequest(http.MethodGet, "/gophers/1", nil)
-	rec := httptest.NewRecorder()
-	httpServer.ServeHTTP(rec, req)
-
-	assert.Equal(t, http.StatusInternalServerError, rec.Code)
-	assert.Contains(t, rec.Body.String(), "cannot get gopher")
+		// trace assertion
+		tracetest.AssertHasTraceSpan(t,
+			traceExporter,
+			"GET /gophers/:id",
+			semconv.HTTPMethod(http.MethodGet),
+			semconv.HTTPRoute("/gophers/1"),
+			semconv.HTTPStatusCode(http.StatusInternalServerError),
+		)
+	})
 }
