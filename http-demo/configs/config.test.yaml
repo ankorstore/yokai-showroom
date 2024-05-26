@@ -1,11 +1,12 @@
 app:
   debug: true
 modules:
+  mysqlmemory:
+    config:
+      protocol: bufconn
   sql:
-    driver: sqlite
-    dsn: ":memory:"
     migrations:
-      stdout: false
+        stdout: false
   log:
     output: test
   trace:

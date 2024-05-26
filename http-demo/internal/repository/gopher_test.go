@@ -3,6 +3,7 @@ package repository_test
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/fxsql"
@@ -15,6 +16,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
+	"os"
 	"testing"
 )
 
@@ -34,6 +36,8 @@ func TestFind(t *testing.T) {
 			fx.Populate(&db, &gopherRepository, &logger, &tracerProvider, &logBuffer, &traceExporter),
 		)
 
+		fmt.Printf("***env: %s\n", os.Getenv("MYSQL_TEST_PORT"))
+
 		// context preparation
 		ctx := logger.WithContext(trace.WithContext(context.Background(), tracerProvider))
 
@@ -47,7 +51,7 @@ func TestFind(t *testing.T) {
 		// log assertion
 		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 			"level":     "debug",
-			"system":    "sqlite",
+			"system":    "mysql",
 			"operation": "connection:query-context",
 			"query":     "SELECT id, name, job FROM gophers WHERE id = ? LIMIT 1",
 			"arguments": "[map[Name: Ordinal:1 Value:1]]",
@@ -59,7 +63,7 @@ func TestFind(t *testing.T) {
 			t,
 			traceExporter,
 			"SQL connection:query-context",
-			semconv.DBSystemKey.String("sqlite"),
+			semconv.DBSystemKey.String("mysql"),
 			attribute.String("db.statement", "SELECT id, name, job FROM gophers WHERE id = ? LIMIT 1"),
 			attribute.String("db.statement.arguments", "[{Name: Ordinal:1 Value:1}]"),
 		)
@@ -112,7 +116,7 @@ func TestFindAll(t *testing.T) {
 		// log assertion
 		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 			"level":     "debug",
-			"system":    "sqlite",
+			"system":    "mysql",
 			"operation": "connection:query-context",
 			"query":     "SELECT id, name, job FROM gophers WHERE name = ? AND job = ? ORDER BY id",
 			"arguments": "[map[Name: Ordinal:1 Value:alice] map[Name: Ordinal:2 Value:frontend]]",
@@ -124,7 +128,7 @@ func TestFindAll(t *testing.T) {
 			t,
 			traceExporter,
 			"SQL connection:query-context",
-			semconv.DBSystemKey.String("sqlite"),
+			semconv.DBSystemKey.String("mysql"),
 			attribute.String("db.statement", "SELECT id, name, job FROM gophers WHERE name = ? AND job = ? ORDER BY id"),
 			attribute.String("db.statement.arguments", "[{Name: Ordinal:1 Value:alice} {Name: Ordinal:2 Value:frontend}]"),
 		)
@@ -171,7 +175,7 @@ func TestCreate(t *testing.T) {
 		// log assertion
 		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 			"level":     "debug",
-			"system":    "sqlite",
+			"system":    "mysql",
 			"operation": "connection:exec-context",
 			"query":     "INSERT INTO gophers (name,job) VALUES (?,?)",
 			"arguments": "[map[Name: Ordinal:1 Value:test name] map[Name: Ordinal:2 Value:test job]]",
@@ -183,7 +187,7 @@ func TestCreate(t *testing.T) {
 			t,
 			traceExporter,
 			"SQL connection:exec-context",
-			semconv.DBSystemKey.String("sqlite"),
+			semconv.DBSystemKey.String("mysql"),
 			attribute.String("db.statement", "INSERT INTO gophers (name,job) VALUES (?,?)"),
 			attribute.String("db.statement.arguments", "[{Name: Ordinal:1 Value:test name} {Name: Ordinal:2 Value:test job}]"),
 		)
@@ -229,7 +233,7 @@ func TestDelete(t *testing.T) {
 		// log assertion
 		logtest.AssertHasLogRecord(t, logBuffer, map[string]interface{}{
 			"level":     "debug",
-			"system":    "sqlite",
+			"system":    "mysql",
 			"operation": "connection:exec-context",
 			"query":     "DELETE FROM gophers WHERE id = ?",
 			"arguments": "[map[Name: Ordinal:1 Value:1]]",
@@ -241,7 +245,7 @@ func TestDelete(t *testing.T) {
 			t,
 			traceExporter,
 			"SQL connection:exec-context",
-			semconv.DBSystemKey.String("sqlite"),
+			semconv.DBSystemKey.String("mysql"),
 			attribute.String("db.statement", "DELETE FROM gophers WHERE id = ?"),
 			attribute.String("db.statement.arguments", "[{Name: Ordinal:1 Value:1}]"),
 		)

@@ -3,11 +3,12 @@ package gopher_test
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai/fxsql"

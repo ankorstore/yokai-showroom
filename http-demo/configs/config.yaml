@@ -56,9 +56,22 @@ modules:
       templates:
         enabled: true
         path: templates/*.html
+  mysqlmemory:
+    config:
+      protocol: tcp
+      socket: /tmp/mysql.sock
+      user: user
+      password: password
+      host: localhost
+      port: 3307
+      database: db
+    log:
+      enabled: true
+    trace:
+      enabled: false
   sql:
     driver: mysql
-    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
+    dsn: user:password@tcp(localhost:3307)/db?parseTime=true
     migrations:
       path: db/migrations
     log:
