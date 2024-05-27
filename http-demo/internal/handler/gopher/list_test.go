@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
+	"github.com/ankorstore/yokai/fxsql"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai/fxsql"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
@@ -46,6 +46,8 @@ func TestListGopherHandler(t *testing.T) {
 		var gophers []model.Gopher
 		err := json.Unmarshal(rec.Body.Bytes(), &gophers)
 		assert.NoError(t, err)
+
+		logBuffer.Dump()
 
 		assert.Len(t, gophers, 5)
 		assert.Equal(t, gophers[0].Name, "alice")

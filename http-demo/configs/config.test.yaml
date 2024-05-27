@@ -1,10 +1,11 @@
 app:
   debug: true
 modules:
-  mysqlmemory:
+  gomysqlserver:
     config:
       protocol: bufconn
   sql:
+    dsn: "user:password@mysqlmemory(bufconn)/db?parseTime=true"
     migrations:
         stdout: false
   log:

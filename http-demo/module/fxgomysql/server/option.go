@@ -3,14 +3,14 @@ package server
 import (
 	"io"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/module/fxmysqlmemory/config"
+	"github.com/ankorstore/yokai-showroom/http-demo/module/fxgomysql/config"
 	"go.opentelemetry.io/otel/trace"
 	"go.opentelemetry.io/otel/trace/noop"
 )
 
 // ServerOptions are options for the [MySQLMemoryServerFactory] implementations.
 type ServerOptions struct {
-	Config    *config.MySQLMemoryServerConfig
+	Config    *config.GoMySQLServerConfig
 	LogOutput io.Writer
 	Tracer    trace.Tracer
 }
@@ -18,7 +18,7 @@ type ServerOptions struct {
 // DefaultMySQLMemoryServerOptions are the default options used in the [DefaultMySQLMemoryServerFactory].
 func DefaultMySQLMemoryServerOptions() ServerOptions {
 	return ServerOptions{
-		Config:    config.NewMySQLMemoryServerConfig(),
+		Config:    config.NewGoMySQLServerConfig(),
 		LogOutput: io.Discard,
 		Tracer:    noop.NewTracerProvider().Tracer(""),
 	}
@@ -27,7 +27,7 @@ func DefaultMySQLMemoryServerOptions() ServerOptions {
 // MySQLMemoryServerOption are functional options for the [MySQLMemoryServerFactory] implementations.
 type MySQLMemoryServerOption func(o *ServerOptions)
 
-func WithConfig(config *config.MySQLMemoryServerConfig) MySQLMemoryServerOption {
+func WithConfig(config *config.GoMySQLServerConfig) MySQLMemoryServerOption {
 	return func(o *ServerOptions) {
 		if config != nil {
 			o.Config = config

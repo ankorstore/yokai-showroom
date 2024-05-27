@@ -56,7 +56,7 @@ modules:
       templates:
         enabled: true
         path: templates/*.html
-  mysqlmemory:
+  gomysqlserver:
     config:
       protocol: tcp
       socket: /tmp/mysql.sock

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/module/fxmysqlmemory"
+	"github.com/ankorstore/yokai-showroom/http-demo/module/fxgomysql"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/db/seeds"
 	"github.com/ankorstore/yokai/fxcore"
@@ -25,8 +25,8 @@ var RootDir string
 var Bootstrapper = fxcore.NewBootstrapper().WithOptions(
 	// modules registration
 	fxhttpserver.FxHttpServerModule,
+	fxgomysql.FxGoMySQLServerModule,
 	fxsql.FxSQLModule,
-	fxmysqlmemory.FxMySQLMemoryModule,
 	// dependencies registration
 	Register(),
 	// routing registration
@@ -50,8 +50,6 @@ func RunTest(tb testing.TB, options ...fx.Option) {
 
 	Bootstrapper.RunTestApp(
 		tb,
-		// run test SQL server
-		fxmysqlmemory.ConnectFxTestMySQLMemoryServer(),
 		// run SQL migrations
 		fxsql.RunFxSQLMigration("up"),
 		// register seeds

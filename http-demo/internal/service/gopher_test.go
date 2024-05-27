@@ -3,14 +3,16 @@ package service_test
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
+	"testing"
+
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"go.uber.org/fx"
-	"strings"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -86,6 +88,8 @@ func TestList(t *testing.T) {
 		// result assertion
 		gophers, err := gopherService.List(context.Background(), "alice", "frontend")
 		assert.NoError(t, err)
+
+		fmt.Printf("!!! *** GOPHERS %+v\n", gophers)
 
 		assert.Len(t, gophers, 1)
 		assert.Equal(t, "alice", gophers[0].Name)

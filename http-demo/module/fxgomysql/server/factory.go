@@ -3,35 +3,43 @@ package server
 import (
 	"context"
 	"fmt"
+	"net"
 	"sync"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/module/fxmysqlmemory/config"
+	"github.com/ankorstore/yokai-showroom/http-demo/module/fxgomysql/config"
 	sqle "github.com/dolthub/go-mysql-server"
 	"github.com/dolthub/go-mysql-server/memory"
 	"github.com/dolthub/go-mysql-server/server"
 	gsql "github.com/dolthub/go-mysql-server/sql"
 	vsql "github.com/dolthub/vitess/go/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/sirupsen/logrus"
 )
 
 var loggerOnce sync.Once
+var dialerOnce sync.Once
 
-type MySQLMemoryServerFactory interface {
+type GoMySQLServerFactory interface {
 	Create(options ...MySQLMemoryServerOption) (*server.Server, error)
 }
 
-type DefaultMySQLMemoryServerFactory struct{}
+type DefaultGoMySQLServerFactory struct{}
 
-func NewDefaultMySQLMemoryServerFactory() *DefaultMySQLMemoryServerFactory {
-	return &DefaultMySQLMemoryServerFactory{}
+func NewDefaultGoMySQLServerFactory() *DefaultGoMySQLServerFactory {
+	return &DefaultGoMySQLServerFactory{}
 }
 
-func (f *DefaultMySQLMemoryServerFactory) Create(options ...MySQLMemoryServerOption) (*server.Server, error) {
+func (f *DefaultGoMySQLServerFactory) Create(options ...MySQLMemoryServerOption) (*server.Server, error) {
 	// resolve options
 	appliedOptions := DefaultMySQLMemoryServerOptions()
 	for _, opt := range options {
 		opt(&appliedOptions)
 	}
+
+	/*	err := gsql.SystemVariables.SetGlobal("secure_file_priv", "/etc")
+		if err != nil {
+			return nil, err
+		}*/
 
 	// configure logger
 	loggerOnce.Do(func() {
@@ -66,6 +74,13 @@ func (f *DefaultMySQLMemoryServerFactory) Create(options ...MySQLMemoryServerOpt
 		memServerConfig.Protocol = "unix"
 		memServerConfig.Socket = appliedOptions.Config.Socket()
 	case config.BufConnProtocol:
+
+		dialerOnce.Do(func() {
+			mysql.RegisterDialContext(config.DefaultNetwork, func(ctx context.Context, addr string) (net.Conn, error) {
+				return appliedOptions.Config.Listener().DialContext(ctx)
+			})
+		})
+
 		memServerConfig.Protocol = "bufconn"
 		memServerConfig.Listener = appliedOptions.Config.Listener()
 

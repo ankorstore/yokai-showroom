@@ -1,32 +1,32 @@
-package fxmysqlmemory
+package fxgomysql
 
 import (
-	"github.com/ankorstore/yokai-showroom/http-demo/module/fxmysqlmemory/config"
+	"github.com/ankorstore/yokai-showroom/http-demo/module/fxgomysql/config"
 	"github.com/dolthub/go-mysql-server/server"
 	"github.com/dolthub/go-mysql-server/sql"
 )
 
-// FxMySQLMemoryModuleInfo is a module info collector for fxmysqlmemory.
-type FxMySQLMemoryModuleInfo struct {
+// FxGoMySQLServerModuleInfo is a module info collector for fxgomysql.
+type FxGoMySQLServerModuleInfo struct {
 	server *server.Server
-	config *config.MySQLMemoryServerConfig
+	config *config.GoMySQLServerConfig
 }
 
-// NewFxMySQLMemoryModuleInfo returns a new [FxMySQLMemoryModuleInfo].
-func NewFxMySQLMemoryModuleInfo(server *server.Server, config *config.MySQLMemoryServerConfig) *FxMySQLMemoryModuleInfo {
-	return &FxMySQLMemoryModuleInfo{
+// NewFxGoMySQLServerModuleInfo returns a new [FxMySQLMemoryModuleInfo].
+func NewFxGoMySQLServerModuleInfo(server *server.Server, config *config.GoMySQLServerConfig) *FxGoMySQLServerModuleInfo {
+	return &FxGoMySQLServerModuleInfo{
 		server: server,
 		config: config,
 	}
 }
 
 // Name return the name of the module info.
-func (i *FxMySQLMemoryModuleInfo) Name() string {
+func (i *FxGoMySQLServerModuleInfo) Name() string {
 	return ModuleName
 }
 
 // Data return the data of the module info.
-func (i *FxMySQLMemoryModuleInfo) Data() map[string]interface{} {
+func (i *FxGoMySQLServerModuleInfo) Data() map[string]interface{} {
 	sessionVars := make(map[uint32]interface{})
 
 	i.server.SessionManager().Iter(func(session sql.Session) (stop bool, err error) {
@@ -43,7 +43,7 @@ func (i *FxMySQLMemoryModuleInfo) Data() map[string]interface{} {
 			"password": i.config.Password(),
 			"host":     i.config.Host(),
 			"port":     i.config.Port(),
-			"options":  i.config.Options(),
+			"database": i.config.Database(),
 		},
 		"sessions": sessionVars,
 	}

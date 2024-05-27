@@ -30,6 +30,8 @@ func (s *GophersSeed) Run(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 
+	_, txErr = tx.ExecContext(ctx, "DELETE FROM gophers")
+
 	seedData := s.config.GetStringMapString("config.seed.gophers")
 
 	names := make([]string, 0, len(seedData))

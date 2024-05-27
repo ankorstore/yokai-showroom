@@ -3,7 +3,8 @@ package repository_test
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"testing"
+
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/fxsql"
@@ -16,8 +17,6 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
-	"os"
-	"testing"
 )
 
 func TestFind(t *testing.T) {
@@ -35,8 +34,6 @@ func TestFind(t *testing.T) {
 			fxsql.RunFxSQLSeeds(),
 			fx.Populate(&db, &gopherRepository, &logger, &tracerProvider, &logBuffer, &traceExporter),
 		)
-
-		fmt.Printf("***env: %s\n", os.Getenv("MYSQL_TEST_PORT"))
 
 		// context preparation
 		ctx := logger.WithContext(trace.WithContext(context.Background(), tracerProvider))
