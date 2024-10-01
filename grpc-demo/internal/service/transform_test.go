@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"io"
-	"net"
 	"strings"
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/grpc-demo/internal"
 	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/service"
 	"github.com/ankorstore/yokai-showroom/grpc-demo/proto"
+	"github.com/ankorstore/yokai/grpcserver/grpcservertest"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/prometheus/client_golang/prometheus"
@@ -19,31 +19,30 @@ import (
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 )
 
 func TestTransformText(t *testing.T) {
 	service.TransformerCounter.Reset()
 
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
 	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis, &logBuffer, &traceExporter, &metricsRegistry))
+	internal.RunTest(t, fx.Populate(&connFactory, &logBuffer, &traceExporter, &metricsRegistry))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
-	assert.NoError(t, err)
-
 	client := proto.NewTransformTextServiceClient(conn)
 
 	// call
@@ -83,25 +82,25 @@ func TestTransformText(t *testing.T) {
 func TestTransformAndSplitText(t *testing.T) {
 	service.TransformerCounter.Reset()
 
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
 	var metricsRegistry *prometheus.Registry
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis, &logBuffer, &traceExporter, &metricsRegistry))
+	internal.RunTest(t, fx.Populate(&connFactory, &logBuffer, &traceExporter, &metricsRegistry))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
-	assert.NoError(t, err)
-
 	client := proto.NewTransformTextServiceClient(conn)
 
 	// call
@@ -196,15 +195,4 @@ func TestTransformAndSplitText(t *testing.T) {
 		"transformer_total",
 	)
 	assert.NoError(t, err)
-}
-
-func prepareGrpcClientTestConnection(lis *bufconn.Listener) (*grpc.ClientConn, error) {
-	return grpc.DialContext(
-		context.Background(),
-		"",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-			return lis.Dial()
-		}),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
 }

@@ -1,7 +1,7 @@
 # Yokai gRPC Demo
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Go version](https://img.shields.io/badge/Go-1.22-blue)](https://go.dev/)
+[![Go version](https://img.shields.io/badge/Go-1.23-blue)](https://go.dev/)
 
 > gRPC API demo application, based on
 > the [Yokai](https://github.com/ankorstore/yokai) Go framework.

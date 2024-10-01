@@ -3,11 +3,11 @@ package interceptor_test
 import (
 	"context"
 	"io"
-	"net"
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/grpc-demo/internal"
 	"github.com/ankorstore/yokai-showroom/grpc-demo/proto"
+	"github.com/ankorstore/yokai/grpcserver/grpcservertest"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/test/bufconn"
 )
 
 //nolint:containedctx
@@ -23,20 +22,22 @@ func TestAuthenticationUnaryInterceptor(t *testing.T) {
 	t.Setenv("AUTH_ENABLED", "true")
 	t.Setenv("AUTH_SECRET", "valid-secret")
 
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis))
+	internal.RunTest(t, fx.Populate(&connFactory))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
 	assert.NoError(t, err)
 
 	client := proto.NewTransformTextServiceClient(conn)
@@ -76,20 +77,22 @@ func TestAuthenticationStreamInterceptor(t *testing.T) {
 	t.Setenv("AUTH_ENABLED", "true")
 	t.Setenv("AUTH_SECRET", "valid-secret")
 
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis))
+	internal.RunTest(t, fx.Populate(&connFactory))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
 	assert.NoError(t, err)
 
 	client := proto.NewTransformTextServiceClient(conn)
@@ -132,15 +135,4 @@ func TestAuthenticationStreamInterceptor(t *testing.T) {
 			assert.Equal(t, tData.wantAtReceive, gotAtReceive)
 		})
 	}
-}
-
-func prepareGrpcClientTestConnection(lis *bufconn.Listener) (*grpc.ClientConn, error) {
-	return grpc.DialContext(
-		context.Background(),
-		"",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-			return lis.Dial()
-		}),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
 }
