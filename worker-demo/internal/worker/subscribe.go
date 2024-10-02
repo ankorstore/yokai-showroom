@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"cloud.google.com/go/pubsub"
+	"github.com/ankorstore/yokai-contrib/fxgcppubsub"
+	"github.com/ankorstore/yokai-contrib/fxgcppubsub/message"
 	"github.com/ankorstore/yokai/config"
 	"github.com/ankorstore/yokai/log"
-	"github.com/ankorstore/yokai/trace"
+	"github.com/ankorstore/yokai/worker"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 )
 
 // SubscribeCounter is a metrics counter for received messages.
@@ -20,15 +22,15 @@ var SubscribeCounter = prometheus.NewCounter(prometheus.CounterOpts{
 
 // SubscribeWorker is a worker to run pub/sub subscribers.
 type SubscribeWorker struct {
-	config *config.Config
-	client *pubsub.Client
+	config     *config.Config
+	subscriber fxgcppubsub.Subscriber
 }
 
 // NewSubscribeWorker returns a new SubscribeWorker.
-func NewSubscribeWorker(config *config.Config, client *pubsub.Client) *SubscribeWorker {
+func NewSubscribeWorker(config *config.Config, subscriber fxgcppubsub.Subscriber) *SubscribeWorker {
 	return &SubscribeWorker{
-		config: config,
-		client: client,
+		config:     config,
+		subscriber: subscriber,
 	}
 }
 
@@ -39,16 +41,21 @@ func (w *SubscribeWorker) Name() string {
 
 // Run executes the worker.
 func (w *SubscribeWorker) Run(ctx context.Context) error {
-	subscription := w.client.Subscription(w.config.GetString("config.subscription.id"))
+	tracer := worker.CtxTracer(ctx)
 
-	return subscription.Receive(ctx, func(c context.Context, msg *pubsub.Message) {
-		data := string(msg.Data)
+	return w.subscriber.Subscribe(ctx, w.config.GetString("config.subscription.id"), func(fCtx context.Context, msg *message.Message) {
+		data := string(msg.Data())
 
-		c, span := trace.CtxTracerProvider(c).Tracer(w.Name()).Start(c, fmt.Sprintf("%s message", w.Name()))
-		span.SetAttributes(attribute.String("Message", data))
+		fCtx, span := tracer.Start(
+			fCtx,
+			fmt.Sprintf("%s message", w.Name()),
+			oteltrace.WithNewRoot(),
+			oteltrace.WithSpanKind(oteltrace.SpanKindConsumer),
+			oteltrace.WithAttributes(attribute.String("Message", data)),
+		)
 		defer span.End()
 
-		log.CtxLogger(c).Info().Msgf("received message: id=%v, data=%v", msg.ID, data)
+		log.CtxLogger(fCtx).Info().Msgf("received message: id=%v, data=%v", msg.ID(), data)
 
 		msg.Ack()
 

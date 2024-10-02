@@ -1,5 +1,5 @@
 ## Multistage build
-FROM golang:1.22 as build
+FROM golang:1.23 as build
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
@@ -14,7 +14,7 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 COPY --from=build /src/configs /configs
-COPY --from=build /src/templates /templates
+#COPY --from=build /src/templates /templates
 COPY --from=build /app /app
 
 ENTRYPOINT ["/app"]

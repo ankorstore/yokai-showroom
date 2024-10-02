@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-contrib/fxgcppubsub"
+	"github.com/ankorstore/yokai/fxconfig"
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxworker"
 	"go.uber.org/fx"
@@ -36,7 +37,11 @@ func Run(ctx context.Context) {
 func RunTest(tb testing.TB, options ...fx.Option) {
 	tb.Helper()
 
-	tb.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", RootDir))
-
-	Bootstrapper.RunTestApp(tb, fx.Options(options...))
+	Bootstrapper.RunTestApp(
+		tb,
+		// config lookup
+		fxconfig.AsConfigPath(fmt.Sprintf("%s/../configs/", RootDir)),
+		// test options
+		fx.Options(options...),
+	)
 }
