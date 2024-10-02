@@ -3,6 +3,8 @@ package repository_test
 import (
 	"context"
 	"database/sql"
+	"testing"
+
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/fxsql"
@@ -15,7 +17,6 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
-	"testing"
 )
 
 func TestFind(t *testing.T) {

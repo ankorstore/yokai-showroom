@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxsql"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )

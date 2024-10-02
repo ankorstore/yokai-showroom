@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/db/seeds"
+	"github.com/ankorstore/yokai/fxconfig"
 	"github.com/ankorstore/yokai/fxcore"
 	"github.com/ankorstore/yokai/fxhttpserver"
 	"github.com/ankorstore/yokai/fxsql"
@@ -39,14 +40,15 @@ func Run(ctx context.Context) {
 func RunTest(tb testing.TB, options ...fx.Option) {
 	tb.Helper()
 
-	// configs
-	tb.Setenv("APP_CONFIG_PATH", fmt.Sprintf("%s/configs", RootDir))
+	// env configs
 	tb.Setenv("MODULES_SQL_MIGRATIONS_PATH", fmt.Sprintf("%s/db/migrations", RootDir))
 	tb.Setenv("MODULES_HTTP_SERVER_TEMPLATES_ENABLED", "true")
 	tb.Setenv("MODULES_HTTP_SERVER_TEMPLATES_PATH", fmt.Sprintf("%s/templates/*.html", RootDir))
 
 	Bootstrapper.RunTestApp(
 		tb,
+		// config lookup
+		fxconfig.AsConfigPath(fmt.Sprintf("%s/configs/", RootDir)),
 		// run SQL migrations
 		fxsql.RunFxSQLMigration("up"),
 		// register seeds

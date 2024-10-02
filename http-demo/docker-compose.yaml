@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   http-demo-app:
     container_name: http-demo-app

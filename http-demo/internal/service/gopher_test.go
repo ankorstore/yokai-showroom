@@ -3,16 +3,16 @@ package service_test
 import (
 	"context"
 	"database/sql"
+	"strings"
+	"testing"
+
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
-	"go.uber.org/fx"
-	"strings"
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/fx"
 )
 
 func TestGet(t *testing.T) {

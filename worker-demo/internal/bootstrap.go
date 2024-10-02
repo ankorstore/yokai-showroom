@@ -40,7 +40,7 @@ func RunTest(tb testing.TB, options ...fx.Option) {
 	Bootstrapper.RunTestApp(
 		tb,
 		// config lookup
-		fxconfig.AsConfigPath(fmt.Sprintf("%s/../configs/", RootDir)),
+		fxconfig.AsConfigPath(fmt.Sprintf("%s/configs/", RootDir)),
 		// test options
 		fx.Options(options...),
 	)

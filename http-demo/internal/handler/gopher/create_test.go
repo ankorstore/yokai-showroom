@@ -4,21 +4,21 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/testutil"
-	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
-	"go.uber.org/fx"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/ankorstore/yokai-showroom/http-demo/internal"
 	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/labstack/echo/v4"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
+	"go.uber.org/fx"
 )
 
 func TestCreateGopherHandler(t *testing.T) {
