@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   grpc-demo-app:
     container_name: grpc-demo-app

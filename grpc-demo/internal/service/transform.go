@@ -62,36 +62,43 @@ func (s *TransformTextService) TransformAndSplitText(stream proto.TransformTextS
 	logger := log.CtxLogger(ctx)
 
 	for {
-		req, err := stream.Recv()
+		select {
+		case <-ctx.Done():
+			logger.Info().Msg("stream context cancelled")
 
-		if errors.Is(err, io.EOF) {
-			logger.Info().Msg("TransformTextAndSplit: end of rpc")
+			return ctx.Err()
+		default:
+			req, err := stream.Recv()
 
-			return nil
-		}
+			if errors.Is(err, io.EOF) {
+				logger.Info().Msg("TransformTextAndSplit: end of rpc")
 
-		if err != nil {
-			logger.Error().Err(err).Msgf("TransformTextAndSplit: error while receiving: %v", err)
-		}
-
-		logger.Info().Msgf("TransformTextAndSplit: -> %s", req.Text)
-
-		split := strings.Split(s.transform(req), " ")
-
-		for _, word := range split {
-			err = stream.Send(&proto.TransformTextResponse{
-				Text: word,
-			})
-
-			if err != nil {
-				logger.Error().Err(err).Msgf("TransformTextAndSplit: error while sending: %v", err)
-
-				return err
+				return nil
 			}
 
-			span.AddEvent(fmt.Sprintf("send word: %s", word))
+			if err != nil {
+				logger.Error().Err(err).Msgf("TransformTextAndSplit: error while receiving: %v", err)
+			}
 
-			logger.Info().Msgf("TransformTextAndSplit: <- %s", word)
+			logger.Info().Msgf("TransformTextAndSplit: -> %s", req.Text)
+
+			split := strings.Split(s.transform(req), " ")
+
+			for _, word := range split {
+				err = stream.Send(&proto.TransformTextResponse{
+					Text: word,
+				})
+
+				if err != nil {
+					logger.Error().Err(err).Msgf("TransformTextAndSplit: error while sending: %v", err)
+
+					return err
+				}
+
+				span.AddEvent(fmt.Sprintf("send word: %s", word))
+
+				logger.Info().Msgf("TransformTextAndSplit: <- %s", word)
+			}
 		}
 	}
 }
