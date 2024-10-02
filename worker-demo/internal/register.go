@@ -1,11 +1,12 @@
 package internal
 
 import (
-	"github.com/ankorstore/yokai-contrib/fxgcppubsub/healthcheck"
+	pubsubhc "github.com/ankorstore/yokai-contrib/fxgcppubsub/healthcheck"
 	"github.com/ankorstore/yokai-showroom/worker-demo/internal/worker"
 	"github.com/ankorstore/yokai/fxhealthcheck"
 	"github.com/ankorstore/yokai/fxmetrics"
 	"github.com/ankorstore/yokai/fxworker"
+	workerhc "github.com/ankorstore/yokai/worker/healthcheck"
 	"go.uber.org/fx"
 )
 
@@ -17,6 +18,8 @@ func Register() fx.Option {
 		// pub/sub subscriber metrics
 		fxmetrics.AsMetricsCollector(worker.SubscribeCounter),
 		// pub/sub subscription health check
-		fxhealthcheck.AsCheckerProbe(healthcheck.NewGcpPubSubSubscriptionsProbe),
+		fxhealthcheck.AsCheckerProbe(pubsubhc.NewGcpPubSubSubscriptionsProbe),
+		// worker pool health check
+		fxhealthcheck.AsCheckerProbe(workerhc.NewWorkerProbe),
 	)
 }

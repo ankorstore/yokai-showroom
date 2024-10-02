@@ -12,7 +12,7 @@ require (
 	github.com/ankorstore/yokai/fxworker v1.1.0
 	github.com/ankorstore/yokai/log v1.2.0
 	github.com/ankorstore/yokai/trace v1.3.0
-	github.com/ankorstore/yokai/worker v1.1.0
+	github.com/ankorstore/yokai/worker v1.2.0
 	github.com/prometheus/client_golang v1.20.4
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
