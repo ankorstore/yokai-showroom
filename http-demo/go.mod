@@ -14,7 +14,6 @@ require (
 	github.com/ankorstore/yokai/log v1.2.0
 	github.com/ankorstore/yokai/sql v1.1.0
 	github.com/ankorstore/yokai/trace v1.3.0
-	github.com/go-sql-driver/mysql v1.8.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/prometheus/client_golang v1.20.4
 	github.com/spf13/cobra v1.8.1
@@ -41,6 +40,7 @@ require (
 	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
