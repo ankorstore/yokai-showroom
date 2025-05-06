@@ -4,6 +4,7 @@ app:
 modules:
   core:
     server:
+      expose: true
       address: ":8081"
       dashboard:
         enabled: true

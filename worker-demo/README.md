@@ -1,7 +1,7 @@
 # Yokai Worker Demo
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Go version](https://img.shields.io/badge/Go-1.23-blue)](https://go.dev/)
+[![Go version](https://img.shields.io/badge/Go-1.24-blue)](https://go.dev/)
 
 > Demo application working with [Pub/Sub](https://cloud.google.com/pubsub), based on
 > the [Yokai](https://github.com/ankorstore/yokai) Go framework.
