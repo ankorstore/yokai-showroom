@@ -1,3 +1,5 @@
+.PHONY: up down fresh logs test lint
+
 up:
 	@if [ ! -f .env ]; then \
         cp .env.example .env; \

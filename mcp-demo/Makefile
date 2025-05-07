@@ -1,4 +1,4 @@
-.PHONY: up down fresh logs test lint
+.PHONY: up down fresh migrate logs test lint
 
 up:
 	@if [ ! -f .env ]; then \
