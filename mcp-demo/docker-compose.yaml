@@ -1,0 +1,65 @@
+services:
+  mcp-demo-app:
+    container_name: mcp-demo-app
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+    depends_on:
+      - mcp-demo-database
+    networks:
+      - mcp-demo
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    expose:
+      - "8080"
+      - "8081"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  mcp-demo-database:
+    container_name: mcp-demo-database
+    image: mysql:8
+    restart: always
+    networks:
+      - mcp-demo
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - mcp-demo-database-data:/var/lib/mysql
+    env_file:
+      - .env
+
+  mcp-demo-inspector:
+    container_name: mcp-demo-inspector
+    build:
+      dockerfile: inspector.Dockerfile
+      context: .
+    networks:
+      - mcp-demo
+    ports:
+      - "6274:6274"
+      - "6277:6277"
+
+  mcp-demo-jaeger:
+    container_name: mcp-demo-jaeger
+    image: jaegertracing/all-in-one
+    networks:
+      - mcp-demo
+    ports:
+      - "4317:4317"
+      - "16686:16686"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+volumes:
+  mcp-demo-database-data:
+    driver: local
+
+networks:
+  mcp-demo:
+    driver: bridge

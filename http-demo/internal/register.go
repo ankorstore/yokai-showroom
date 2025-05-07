@@ -11,7 +11,7 @@ import (
 // Register is used to register the application dependencies.
 func Register() fx.Option {
 	return fx.Options(
-		// services
+		// domain
 		fx.Provide(
 			domain.NewGopherRepository,
 			domain.NewGopherService,

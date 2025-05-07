@@ -1,0 +1,21 @@
+app:
+  debug: true
+modules:
+  sql:
+    driver: sqlite
+    dsn: ":memory:"
+    migrations:
+      stdout: false
+  log:
+    output: test
+  trace:
+    processor:
+      type: test
+config:
+  seed:
+    gophers:
+      alice: frontend
+      bob: backend
+      carl: backend
+      dan: frontend
+      elvis: backend

@@ -1,0 +1,87 @@
+app:
+  name: mcp-demo-app
+  version: 0.1.0
+modules:
+  core:
+    server:
+      expose: true
+      address: ":8081"
+      dashboard:
+        enabled: true
+        overview:
+          app_env: true
+          app_debug: true
+          app_version: true
+          log_level: true
+          log_output: true
+          trace_sampler: true
+          trace_processor: true
+      metrics:
+        expose: true
+        collect:
+          enabled: true
+        normalize:
+          request_path: true
+          response_status: true
+      healthcheck:
+        startup:
+          expose: true
+        readiness:
+          expose: true
+        liveness:
+          expose: true
+      debug:
+        config:
+          expose: true
+        pprof:
+          expose: true
+        routes:
+          expose: true
+        stats:
+          expose: true
+        build:
+          expose: true
+        modules:
+          expose: true
+  mcp:
+    server:
+      name: "Gophers MCP server"
+      version: 1.0.0
+      capabilities:
+        resources: true
+        prompts: true
+        tools: true
+      transport:
+        sse:
+          expose: true
+          address: ":8080"
+          keep_alive: true
+          keep_alive_interval: 10
+      metrics:
+        collect:
+          enabled: true
+  sql:
+    driver: mysql
+    dsn: ${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?parseTime=true
+    migrations:
+      path: db/migrations
+    log:
+      enabled: true
+      level: debug
+      arguments: true
+      exclude:
+        - "connection:ping"
+        - "connection:reset-session"
+        - "connection:close"
+    trace:
+      enabled: true
+      arguments: true
+      exclude:
+        - "connection:ping"
+        - "connection:reset-session"
+        - "connection:close"
+config:
+  gophers:
+    jobs:
+      backend: This is the job for gophers that love clean architecture.
+      frontend: This is the job for gophers that love clean interfaces.

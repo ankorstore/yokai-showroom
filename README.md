@@ -18,5 +18,6 @@ You can find below some [Yokai](https://github.com/ankorstore/yokai) demo applic
 |----------------------------|-------------------------|
 | [grpc-demo](grpc-demo)     | gRPC demo application   |
 | [http-demo](http-demo)     | HTTP demo application   |
+| [mcp-demo](mcp-demo)       | MCP demo application    |
 | [worker-demo](worker-demo) | Worker demo application |
 
