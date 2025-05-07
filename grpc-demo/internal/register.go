@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/interceptor"
-	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/api/interceptor"
+	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/api/service"
 	"github.com/ankorstore/yokai-showroom/grpc-demo/proto"
 	"github.com/ankorstore/yokai/fxgrpcserver"
 	"github.com/ankorstore/yokai/fxmetrics"

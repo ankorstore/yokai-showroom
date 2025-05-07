@@ -1,16 +1,17 @@
-package model_test
+package domain_test
 
 import (
 	"database/sql"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGopher(t *testing.T) {
 	t.Parallel()
 
-	gopher := &model.Gopher{
+	gopher := &domain.Gopher{
 		ID:   1,
 		Name: "test",
 		Job:  sql.NullString{String: "test", Valid: true},

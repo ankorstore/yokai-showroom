@@ -32,11 +32,12 @@ This demo application is following the [recommended project layout](https://go.d
 
 - `cmd/`: entry points
 - `configs/`: configuration files
-- `internal/`:
-  - `interceptor/`: gRPC interceptors
-  - `service/`: gRPC services
-  - `bootstrap.go`: bootstrap
-  - `register.go`: dependencies registration
+  - `internal/`:
+    - `api/`: gRPC API
+      - `interceptor/`: gRPC interceptors
+      - `service/`: gRPC services
+    - `bootstrap.go`: bootstrap
+    - `register.go`: dependencies registration
 - `proto/`: protobuf definition and stubs
 
 ### Makefile
@@ -86,7 +87,7 @@ This demo application also provides [reflection](https://ankorstore.github.io/yo
 
 ### Authentication
 
-This demo application provides example [authentication interceptors](internal/interceptor/authentication.go).
+This demo application provides example [authentication interceptors](internal/api/interceptor/authentication.go).
 
 You can enable authentication in the application [configuration file](configs/config.yaml) with `config.authentication.enabled=true`.
 

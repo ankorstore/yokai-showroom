@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/labstack/echo/v4"
 )
 
 // ListGophersHandler is the http handler to list all gophers.
 type ListGophersHandler struct {
-	service *service.GopherService
+	service *domain.GopherService
 }
 
 // NewListGophersHandler returns a new ListGophersHandler.
-func NewListGophersHandler(service *service.GopherService) *ListGophersHandler {
+func NewListGophersHandler(service *domain.GopherService) *ListGophersHandler {
 	return &ListGophersHandler{
 		service: service,
 	}

@@ -1,8 +1,7 @@
 package internal
 
 import (
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/ankorstore/yokai/fxhealthcheck"
 	"github.com/ankorstore/yokai/fxmetrics"
 	"github.com/ankorstore/yokai/sql/healthcheck"
@@ -14,11 +13,11 @@ func Register() fx.Option {
 	return fx.Options(
 		// services
 		fx.Provide(
-			repository.NewGopherRepository,
-			service.NewGopherService,
+			domain.NewGopherRepository,
+			domain.NewGopherService,
 		),
 		// metrics
-		fxmetrics.AsMetricsCollector(service.GopherServiceCounter),
+		fxmetrics.AsMetricsCollector(domain.GopherServiceCounter),
 		// probes
 		fxhealthcheck.AsCheckerProbe(healthcheck.NewSQLProbe),
 	)

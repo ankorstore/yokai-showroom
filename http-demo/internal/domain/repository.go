@@ -1,4 +1,4 @@
-package repository
+package domain
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
 )
 
 // GopherRepository is the repository to handle the [model.Gopher] model database interactions.
@@ -23,8 +22,8 @@ func NewGopherRepository(db *sql.DB) *GopherRepository {
 }
 
 // Find finds a gopher by id.
-func (r *GopherRepository) Find(ctx context.Context, id int) (model.Gopher, error) {
-	var gopher model.Gopher
+func (r *GopherRepository) Find(ctx context.Context, id int) (Gopher, error) {
+	var gopher Gopher
 
 	query, args, err := sq.
 		Select("id", "name", "job").
@@ -50,7 +49,7 @@ type GopherRepositoryFindAllParams struct {
 }
 
 // FindAll finds all gophers.
-func (r *GopherRepository) FindAll(ctx context.Context, params GopherRepositoryFindAllParams) ([]model.Gopher, error) {
+func (r *GopherRepository) FindAll(ctx context.Context, params GopherRepositoryFindAllParams) ([]Gopher, error) {
 	qb := sq.
 		Select("id", "name", "job").
 		From("gophers")
@@ -75,9 +74,9 @@ func (r *GopherRepository) FindAll(ctx context.Context, params GopherRepositoryF
 		return nil, err
 	}
 
-	var gophers []model.Gopher
+	var gophers []Gopher
 	for rows.Next() {
-		var gopher model.Gopher
+		var gopher Gopher
 		if err = rows.Scan(&gopher.ID, &gopher.Name, &gopher.Job); err != nil {
 			return nil, err
 		}

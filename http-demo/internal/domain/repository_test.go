@@ -1,4 +1,4 @@
-package repository_test
+package domain_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/ankorstore/yokai/log"
 	"github.com/ankorstore/yokai/log/logtest"
@@ -19,9 +19,9 @@ import (
 	"go.uber.org/fx"
 )
 
-func TestFind(t *testing.T) {
+func TestGopherRepository_Find(t *testing.T) {
 	var db *sql.DB
-	var gopherRepository *repository.GopherRepository
+	var gopherRepository *domain.GopherRepository
 	var logger *log.Logger
 	var tracerProvider oteltrace.TracerProvider
 	var logBuffer logtest.TestLogBuffer
@@ -80,9 +80,9 @@ func TestFind(t *testing.T) {
 	})
 }
 
-func TestFindAll(t *testing.T) {
+func TestGopherRepository_FindAll(t *testing.T) {
 	var db *sql.DB
-	var gopherRepository *repository.GopherRepository
+	var gopherRepository *domain.GopherRepository
 	var logger *log.Logger
 	var tracerProvider oteltrace.TracerProvider
 	var logBuffer logtest.TestLogBuffer
@@ -100,7 +100,7 @@ func TestFindAll(t *testing.T) {
 		ctx := logger.WithContext(trace.WithContext(context.Background(), tracerProvider))
 
 		// result assertion
-		gophers, err := gopherRepository.FindAll(ctx, repository.GopherRepositoryFindAllParams{
+		gophers, err := gopherRepository.FindAll(ctx, domain.GopherRepositoryFindAllParams{
 			Name: sql.NullString{String: "alice", Valid: true},
 			Job:  sql.NullString{String: "frontend", Valid: true},
 		})
@@ -140,14 +140,14 @@ func TestFindAll(t *testing.T) {
 		assert.NoError(t, err)
 
 		// result assertion
-		_, err = gopherRepository.FindAll(context.Background(), repository.GopherRepositoryFindAllParams{})
+		_, err = gopherRepository.FindAll(context.Background(), domain.GopherRepositoryFindAllParams{})
 		assert.Error(t, err)
 	})
 }
 
-func TestCreate(t *testing.T) {
+func TestGopherRepository_Create(t *testing.T) {
 	var db *sql.DB
-	var gopherRepository *repository.GopherRepository
+	var gopherRepository *domain.GopherRepository
 	var logger *log.Logger
 	var tracerProvider oteltrace.TracerProvider
 	var logBuffer logtest.TestLogBuffer
@@ -161,7 +161,7 @@ func TestCreate(t *testing.T) {
 		ctx := logger.WithContext(trace.WithContext(context.Background(), tracerProvider))
 
 		// result assertion
-		gopherId, err := gopherRepository.Create(ctx, repository.GopherRepositoryCreateParams{
+		gopherId, err := gopherRepository.Create(ctx, domain.GopherRepositoryCreateParams{
 			Name: "test name",
 			Job:  sql.NullString{String: "test job", Valid: true},
 		})
@@ -199,14 +199,14 @@ func TestCreate(t *testing.T) {
 		assert.NoError(t, err)
 
 		// result assertion
-		_, err = gopherRepository.Create(context.Background(), repository.GopherRepositoryCreateParams{})
+		_, err = gopherRepository.Create(context.Background(), domain.GopherRepositoryCreateParams{})
 		assert.Error(t, err)
 	})
 }
 
-func TestDelete(t *testing.T) {
+func TestGopherRepository_Delete(t *testing.T) {
 	var db *sql.DB
-	var gopherRepository *repository.GopherRepository
+	var gopherRepository *domain.GopherRepository
 	var logger *log.Logger
 	var tracerProvider oteltrace.TracerProvider
 	var logBuffer logtest.TestLogBuffer

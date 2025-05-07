@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/grpc-demo/internal"
-	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/grpc-demo/internal/api/service"
 	"github.com/ankorstore/yokai-showroom/grpc-demo/proto"
 	"github.com/ankorstore/yokai/grpcserver/grpcservertest"
 	"github.com/ankorstore/yokai/log/logtest"

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
@@ -42,7 +42,7 @@ func TestGetGopherHandler(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, rec.Code)
 
-		var gopher model.Gopher
+		var gopher domain.Gopher
 		err := json.Unmarshal(rec.Body.Bytes(), &gopher)
 		assert.NoError(t, err)
 

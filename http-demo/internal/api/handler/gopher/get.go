@@ -7,17 +7,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/labstack/echo/v4"
 )
 
 // GetGopherHandler is the http handler to get a gopher.
 type GetGopherHandler struct {
-	service *service.GopherService
+	service *domain.GopherService
 }
 
 // NewGetGopherHandler returns a new GetGopherHandler.
-func NewGetGopherHandler(service *service.GopherService) *GetGopherHandler {
+func NewGetGopherHandler(service *domain.GopherService) *GetGopherHandler {
 	return &GetGopherHandler{
 		service: service,
 	}

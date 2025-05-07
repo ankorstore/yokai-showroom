@@ -1,4 +1,4 @@
-package service_test
+package domain_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/ankorstore/yokai-showroom/http-demo/internal"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/ankorstore/yokai/fxsql"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
@@ -15,14 +15,14 @@ import (
 	"go.uber.org/fx"
 )
 
-func TestGet(t *testing.T) {
+func TestGopherService_Get(t *testing.T) {
 	var db *sql.DB
-	var gopherService *service.GopherService
+	var gopherService *domain.GopherService
 	var metricsRegistry *prometheus.Registry
 
 	t.Run("should succeed", func(t *testing.T) {
 		// reset
-		service.GopherServiceCounter.Reset()
+		domain.GopherServiceCounter.Reset()
 
 		// run test
 		internal.RunTest(
@@ -67,14 +67,14 @@ func TestGet(t *testing.T) {
 	})
 }
 
-func TestList(t *testing.T) {
+func TestGopherService_List(t *testing.T) {
 	var db *sql.DB
-	var gopherService *service.GopherService
+	var gopherService *domain.GopherService
 	var metricsRegistry *prometheus.Registry
 
 	t.Run("should succeed", func(t *testing.T) {
 		// reset
-		service.GopherServiceCounter.Reset()
+		domain.GopherServiceCounter.Reset()
 
 		// run test
 		internal.RunTest(
@@ -120,14 +120,14 @@ func TestList(t *testing.T) {
 	})
 }
 
-func TestCreate(t *testing.T) {
+func TestGopherService_Create(t *testing.T) {
 	var db *sql.DB
-	var gopherService *service.GopherService
+	var gopherService *domain.GopherService
 	var metricsRegistry *prometheus.Registry
 
 	t.Run("should succeed", func(t *testing.T) {
 		// reset
-		service.GopherServiceCounter.Reset()
+		domain.GopherServiceCounter.Reset()
 
 		// run test
 		internal.RunTest(
@@ -170,14 +170,14 @@ func TestCreate(t *testing.T) {
 	})
 }
 
-func TestDelete(t *testing.T) {
+func TestGopherService_Delete(t *testing.T) {
 	var db *sql.DB
-	var gopherService *service.GopherService
+	var gopherService *domain.GopherService
 	var metricsRegistry *prometheus.Registry
 
 	t.Run("should succeed", func(t *testing.T) {
 		// reset
-		service.GopherServiceCounter.Reset()
+		domain.GopherServiceCounter.Reset()
 
 		// run test
 		internal.RunTest(

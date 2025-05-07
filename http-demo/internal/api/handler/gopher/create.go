@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/service"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/domain"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,11 +17,11 @@ type CreateGopherParams struct {
 
 // CreateGopherHandler is the http handler to create a gopher.
 type CreateGopherHandler struct {
-	service *service.GopherService
+	service *domain.GopherService
 }
 
 // NewCreateGopherHandler returns a new CreateGopherHandler.
-func NewCreateGopherHandler(service *service.GopherService) *CreateGopherHandler {
+func NewCreateGopherHandler(service *domain.GopherService) *CreateGopherHandler {
 	return &CreateGopherHandler{
 		service: service,
 	}

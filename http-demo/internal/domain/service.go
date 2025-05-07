@@ -1,11 +1,9 @@
-package service
+package domain
 
 import (
 	"context"
 	"database/sql"
 
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/model"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/repository"
 	"github.com/ankorstore/yokai/config"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -24,11 +22,11 @@ var GopherServiceCounter = prometheus.NewCounterVec(
 // GopherService is the service to manage the gophers.
 type GopherService struct {
 	config     *config.Config
-	repository *repository.GopherRepository
+	repository *GopherRepository
 }
 
 // NewGopherService returns a new NewGopherService.
-func NewGopherService(config *config.Config, repository *repository.GopherRepository) *GopherService {
+func NewGopherService(config *config.Config, repository *GopherRepository) *GopherService {
 	return &GopherService{
 		config:     config,
 		repository: repository,
@@ -36,10 +34,10 @@ func NewGopherService(config *config.Config, repository *repository.GopherReposi
 }
 
 // List returns a list of all gophers, filterable by name and job.
-func (s *GopherService) List(ctx context.Context, name string, job string) ([]model.Gopher, error) {
+func (s *GopherService) List(ctx context.Context, name string, job string) ([]Gopher, error) {
 	GopherServiceCounter.WithLabelValues("list").Inc()
 
-	return s.repository.FindAll(ctx, repository.GopherRepositoryFindAllParams{
+	return s.repository.FindAll(ctx, GopherRepositoryFindAllParams{
 		Name: sql.NullString{String: name, Valid: name != ""},
 		Job:  sql.NullString{String: job, Valid: job != ""},
 	})
@@ -49,14 +47,14 @@ func (s *GopherService) List(ctx context.Context, name string, job string) ([]mo
 func (s *GopherService) Create(ctx context.Context, name string, job string) (int, error) {
 	GopherServiceCounter.WithLabelValues("create").Inc()
 
-	return s.repository.Create(ctx, repository.GopherRepositoryCreateParams{
+	return s.repository.Create(ctx, GopherRepositoryCreateParams{
 		Name: name,
 		Job:  sql.NullString{String: job, Valid: job != ""},
 	})
 }
 
 // Get returns a gopher by id.
-func (s *GopherService) Get(ctx context.Context, id int) (model.Gopher, error) {
+func (s *GopherService) Get(ctx context.Context, id int) (Gopher, error) {
 	GopherServiceCounter.WithLabelValues("get").Inc()
 
 	return s.repository.Find(ctx, id)

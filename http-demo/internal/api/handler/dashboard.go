@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/ankorstore/yokai/config"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 // DashboardHandler is the http handler to render the dashboard.

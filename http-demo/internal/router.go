@@ -1,9 +1,9 @@
 package internal
 
 import (
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/handler"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/handler/gopher"
-	"github.com/ankorstore/yokai-showroom/http-demo/internal/middleware"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/api/handler"
+	gopher2 "github.com/ankorstore/yokai-showroom/http-demo/internal/api/handler/gopher"
+	"github.com/ankorstore/yokai-showroom/http-demo/internal/api/middleware"
 	"github.com/ankorstore/yokai/fxhttpserver"
 	"go.uber.org/fx"
 )
@@ -19,10 +19,10 @@ func Router() fx.Option {
 		fxhttpserver.AsHandlersGroup(
 			"/gophers",
 			[]*fxhttpserver.HandlerRegistration{
-				fxhttpserver.NewHandlerRegistration("GET", "", gopher.NewListGophersHandler),
-				fxhttpserver.NewHandlerRegistration("POST", "", gopher.NewCreateGopherHandler),
-				fxhttpserver.NewHandlerRegistration("GET", "/:id", gopher.NewGetGopherHandler),
-				fxhttpserver.NewHandlerRegistration("DELETE", "/:id", gopher.NewDeleteGopherHandler),
+				fxhttpserver.NewHandlerRegistration("GET", "", gopher2.NewListGophersHandler),
+				fxhttpserver.NewHandlerRegistration("POST", "", gopher2.NewCreateGopherHandler),
+				fxhttpserver.NewHandlerRegistration("GET", "/:id", gopher2.NewGetGopherHandler),
+				fxhttpserver.NewHandlerRegistration("DELETE", "/:id", gopher2.NewDeleteGopherHandler),
 			},
 		),
 	)
