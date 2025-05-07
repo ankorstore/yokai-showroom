@@ -14,20 +14,24 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// GetGopherTool is the MCP tool to retrieve gophers.
 type GetGopherTool struct {
 	service *domain.GopherService
 }
 
+// NewGetGopherTool returns a new GetGopherTool instance.
 func NewGetGopherTool(service *domain.GopherService) *GetGopherTool {
 	return &GetGopherTool{
 		service: service,
 	}
 }
 
+// Name returns the GetGopherTool name.
 func (t *GetGopherTool) Name() string {
 	return "get-gopher"
 }
 
+// Options returns the GetGopherTool options.
 func (t *GetGopherTool) Options() []mcp.ToolOption {
 	return []mcp.ToolOption{
 		mcp.WithDescription("retrieve one specific gopher by id"),
@@ -39,6 +43,7 @@ func (t *GetGopherTool) Options() []mcp.ToolOption {
 	}
 }
 
+// Handle returns the GetGopherTool request handler.
 func (t *GetGopherTool) Handle() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		ctx, span := trace.CtxTracer(ctx).Start(ctx, "GetGopherTool.Handle")

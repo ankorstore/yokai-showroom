@@ -12,20 +12,24 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// CreateGopherTool is the MCP tool to create gophers.
 type CreateGopherTool struct {
 	service *domain.GopherService
 }
 
+// NewCreateGopherTool returns a new CreateGopherTool instance.
 func NewCreateGopherTool(service *domain.GopherService) *CreateGopherTool {
 	return &CreateGopherTool{
 		service: service,
 	}
 }
 
+// Name returns the CreateGopherTool name.
 func (t *CreateGopherTool) Name() string {
 	return "create-gopher"
 }
 
+// Options returns the CreateGopherTool options.
 func (t *CreateGopherTool) Options() []mcp.ToolOption {
 	return []mcp.ToolOption{
 		mcp.WithDescription("create one new gopher"),
@@ -43,6 +47,7 @@ func (t *CreateGopherTool) Options() []mcp.ToolOption {
 	}
 }
 
+// Handle returns the CreateGopherTool request handler.
 func (t *CreateGopherTool) Handle() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		ctx, span := trace.CtxTracer(ctx).Start(ctx, "CreateGopherTool.Handle")

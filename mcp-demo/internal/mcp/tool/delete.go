@@ -13,20 +13,24 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// DeleteGopherTool is the MCP tool to delete gophers.
 type DeleteGopherTool struct {
 	service *domain.GopherService
 }
 
+// NewDeleteGopherTool returns a new DeleteGopherTool instance.
 func NewDeleteGopherTool(service *domain.GopherService) *DeleteGopherTool {
 	return &DeleteGopherTool{
 		service: service,
 	}
 }
 
+// Name returns the DeleteGopherTool name.
 func (t *DeleteGopherTool) Name() string {
 	return "delete-gopher"
 }
 
+// Options returns the DeleteGopherTool options.
 func (t *DeleteGopherTool) Options() []mcp.ToolOption {
 	return []mcp.ToolOption{
 		mcp.WithDescription("delete one specific gopher by id"),
@@ -38,6 +42,7 @@ func (t *DeleteGopherTool) Options() []mcp.ToolOption {
 	}
 }
 
+// Handle returns the DeleteGopherTool request handler.
 func (t *DeleteGopherTool) Handle() server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		ctx, span := trace.CtxTracer(ctx).Start(ctx, "DeleteGopherTool.Handle")
