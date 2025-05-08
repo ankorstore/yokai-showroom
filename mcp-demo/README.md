@@ -48,7 +48,6 @@ This demo application is following the [recommended project layout](https://go.d
     - `tool/`: MCP tools
   - `bootstrap.go`: bootstrap
   - `register.go`: dependencies registration
-- `templates/`: HTML templates
 
 ### Makefile
 
