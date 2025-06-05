@@ -52,11 +52,11 @@ modules:
         prompts: true
         tools: true
       transport:
-        sse:
+        stream:
           expose: true
           address: ":8080"
-          keep_alive: true
-          keep_alive_interval: 10
+          stateless: true
+          base_path: "/mcp"
       metrics:
         collect:
           enabled: true

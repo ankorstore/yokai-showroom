@@ -22,14 +22,14 @@ func TestDeleteGopherTool(t *testing.T) {
 	runTest := func(
 		tb testing.TB,
 	) (
-		*fxmcpservertest.MCPSSETestServer,
+		*fxmcpservertest.MCPStreamableHTTPTestServer,
 		logtest.TestLogBuffer,
 		tracetest.TestTraceExporter,
 		*prometheus.Registry,
 	) {
 		tb.Helper()
 
-		var testServer *fxmcpservertest.MCPSSETestServer
+		var testServer *fxmcpservertest.MCPStreamableHTTPTestServer
 		var logBuffer logtest.TestLogBuffer
 		var traceExporter tracetest.TestTraceExporter
 		var metricsRegistry *prometheus.Registry
@@ -51,8 +51,6 @@ func TestDeleteGopherTool(t *testing.T) {
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
 
-		defer testClient.Close()
-
 		req := mcp.CallToolRequest{}
 		req.Params.Name = "delete-gopher"
 		req.Params.Arguments = map[string]any{
@@ -71,7 +69,7 @@ func TestDeleteGopherTool(t *testing.T) {
 			"level":        "info",
 			"mcpMethod":    "tools/call",
 			"mcpTool":      "delete-gopher",
-			"mcpTransport": "sse",
+			"mcpTransport": "streamable-http",
 			"message":      "MCP request success",
 		})
 
@@ -81,7 +79,7 @@ func TestDeleteGopherTool(t *testing.T) {
 			"MCP tools/call delete-gopher",
 			attribute.String("mcp.method", "tools/call"),
 			attribute.String("mcp.tool", "delete-gopher"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `
@@ -107,8 +105,6 @@ func TestDeleteGopherTool(t *testing.T) {
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
 
-		defer testClient.Close()
-
 		req := mcp.CallToolRequest{}
 		req.Params.Name = "delete-gopher"
 		req.Params.Arguments = map[string]any{
@@ -124,7 +120,7 @@ func TestDeleteGopherTool(t *testing.T) {
 			"mcpError":     "request error: cannot get gopher: sql: no rows in result set",
 			"mcpMethod":    "tools/call",
 			"mcpTool":      "delete-gopher",
-			"mcpTransport": "sse",
+			"mcpTransport": "streamable-http",
 			"message":      "MCP request error",
 		})
 
@@ -135,7 +131,7 @@ func TestDeleteGopherTool(t *testing.T) {
 			attribute.String("mcp.error", "request error: cannot get gopher: sql: no rows in result set"),
 			attribute.String("mcp.method", "tools/call"),
 			attribute.String("mcp.tool", "delete-gopher"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `

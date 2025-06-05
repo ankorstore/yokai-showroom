@@ -51,7 +51,7 @@ func (t *DeleteGopherTool) Handle() server.ToolHandlerFunc {
 		log.CtxLogger(ctx).Info().Msg("DeleteGopherTool.Handle")
 
 		id := 0
-		idParam, ok := request.Params.Arguments["id"]
+		idParam, ok := request.GetArguments()["id"]
 		if ok {
 			var err error
 

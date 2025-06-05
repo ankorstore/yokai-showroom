@@ -21,14 +21,14 @@ func TestJobAssistPrompt(t *testing.T) {
 	runTest := func(
 		tb testing.TB,
 	) (
-		*fxmcpservertest.MCPSSETestServer,
+		*fxmcpservertest.MCPStreamableHTTPTestServer,
 		logtest.TestLogBuffer,
 		tracetest.TestTraceExporter,
 		*prometheus.Registry,
 	) {
 		tb.Helper()
 
-		var testServer *fxmcpservertest.MCPSSETestServer
+		var testServer *fxmcpservertest.MCPStreamableHTTPTestServer
 		var logBuffer logtest.TestLogBuffer
 		var traceExporter tracetest.TestTraceExporter
 		var metricsRegistry *prometheus.Registry
@@ -45,8 +45,6 @@ func TestJobAssistPrompt(t *testing.T) {
 
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
-
-		defer testClient.Close()
 
 		req := mcp.GetPromptRequest{}
 		req.Params.Name = "jobs-assist"
@@ -69,7 +67,7 @@ func TestJobAssistPrompt(t *testing.T) {
 			"level":        "info",
 			"mcpMethod":    "prompts/get",
 			"mcpPrompt":    "jobs-assist",
-			"mcpTransport": "sse",
+			"mcpTransport": "streamable-http",
 			"message":      "MCP request success",
 		})
 
@@ -79,7 +77,7 @@ func TestJobAssistPrompt(t *testing.T) {
 			"MCP prompts/get jobs-assist",
 			attribute.String("mcp.method", "prompts/get"),
 			attribute.String("mcp.prompt", "jobs-assist"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `

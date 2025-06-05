@@ -22,14 +22,14 @@ func TestListGophersTool(t *testing.T) {
 	runTest := func(
 		tb testing.TB,
 	) (
-		*fxmcpservertest.MCPSSETestServer,
+		*fxmcpservertest.MCPStreamableHTTPTestServer,
 		logtest.TestLogBuffer,
 		tracetest.TestTraceExporter,
 		*prometheus.Registry,
 	) {
 		tb.Helper()
 
-		var testServer *fxmcpservertest.MCPSSETestServer
+		var testServer *fxmcpservertest.MCPStreamableHTTPTestServer
 		var logBuffer logtest.TestLogBuffer
 		var traceExporter tracetest.TestTraceExporter
 		var metricsRegistry *prometheus.Registry
@@ -45,8 +45,6 @@ func TestListGophersTool(t *testing.T) {
 
 	t.Run("can list all gophers", func(t *testing.T) {
 		testServer, logBuffer, traceExporter, metricsRegistry := runTest(t)
-
-		defer testServer.Close()
 
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
@@ -72,7 +70,7 @@ func TestListGophersTool(t *testing.T) {
 			"level":        "info",
 			"mcpMethod":    "tools/call",
 			"mcpTool":      "list-gophers",
-			"mcpTransport": "sse",
+			"mcpTransport": "streamable-http",
 			"message":      "MCP request success",
 		})
 
@@ -82,7 +80,7 @@ func TestListGophersTool(t *testing.T) {
 			"MCP tools/call list-gophers",
 			attribute.String("mcp.method", "tools/call"),
 			attribute.String("mcp.tool", "list-gophers"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `
@@ -102,8 +100,6 @@ func TestListGophersTool(t *testing.T) {
 
 	t.Run("can list only frontend gophers", func(t *testing.T) {
 		testServer, logBuffer, traceExporter, metricsRegistry := runTest(t)
-
-		defer testServer.Close()
 
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
@@ -132,7 +128,7 @@ func TestListGophersTool(t *testing.T) {
 			"level":        "info",
 			"mcpMethod":    "tools/call",
 			"mcpTool":      "list-gophers",
-			"mcpTransport": "sse",
+			"mcpTransport": "streamable-http",
 			"message":      "MCP request success",
 		})
 
@@ -142,7 +138,7 @@ func TestListGophersTool(t *testing.T) {
 			"MCP tools/call list-gophers",
 			attribute.String("mcp.method", "tools/call"),
 			attribute.String("mcp.tool", "list-gophers"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `

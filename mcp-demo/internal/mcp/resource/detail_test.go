@@ -21,14 +21,14 @@ func TestJobDetailResource(t *testing.T) {
 	runTest := func(
 		tb testing.TB,
 	) (
-		*fxmcpservertest.MCPSSETestServer,
+		*fxmcpservertest.MCPStreamableHTTPTestServer,
 		logtest.TestLogBuffer,
 		tracetest.TestTraceExporter,
 		*prometheus.Registry,
 	) {
 		tb.Helper()
 
-		var testServer *fxmcpservertest.MCPSSETestServer
+		var testServer *fxmcpservertest.MCPStreamableHTTPTestServer
 		var logBuffer logtest.TestLogBuffer
 		var traceExporter tracetest.TestTraceExporter
 		var metricsRegistry *prometheus.Registry
@@ -45,8 +45,6 @@ func TestJobDetailResource(t *testing.T) {
 
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
-
-		defer testClient.Close()
 
 		req := mcp.ReadResourceRequest{}
 		req.Params.URI = "jobs://jobs/frontend"
@@ -65,7 +63,7 @@ func TestJobDetailResource(t *testing.T) {
 			"level":          "info",
 			"mcpMethod":      "resources/read",
 			"mcpResourceURI": "jobs://jobs/frontend",
-			"mcpTransport":   "sse",
+			"mcpTransport":   "streamable-http",
 			"message":        "MCP request success",
 		})
 
@@ -75,7 +73,7 @@ func TestJobDetailResource(t *testing.T) {
 			"MCP resources/read jobs://jobs/frontend",
 			attribute.String("mcp.method", "resources/read"),
 			attribute.String("mcp.resourceURI", "jobs://jobs/frontend"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `
@@ -101,8 +99,6 @@ func TestJobDetailResource(t *testing.T) {
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
 
-		defer testClient.Close()
-
 		req := mcp.ReadResourceRequest{}
 		req.Params.URI = "jobs://jobs/invalid"
 
@@ -115,7 +111,7 @@ func TestJobDetailResource(t *testing.T) {
 			"mcpError":       "request error: job invalid does not exist",
 			"mcpMethod":      "resources/read",
 			"mcpResourceURI": "jobs://jobs/invalid",
-			"mcpTransport":   "sse",
+			"mcpTransport":   "streamable-http",
 			"message":        "MCP request error",
 		})
 
@@ -126,7 +122,7 @@ func TestJobDetailResource(t *testing.T) {
 			attribute.String("mcp.error", "request error: job invalid does not exist"),
 			attribute.String("mcp.method", "resources/read"),
 			attribute.String("mcp.resourceURI", "jobs://jobs/invalid"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `

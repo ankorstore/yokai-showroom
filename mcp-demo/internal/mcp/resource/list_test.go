@@ -21,14 +21,14 @@ func TestJobsListResource(t *testing.T) {
 	runTest := func(
 		tb testing.TB,
 	) (
-		*fxmcpservertest.MCPSSETestServer,
+		*fxmcpservertest.MCPStreamableHTTPTestServer,
 		logtest.TestLogBuffer,
 		tracetest.TestTraceExporter,
 		*prometheus.Registry,
 	) {
 		tb.Helper()
 
-		var testServer *fxmcpservertest.MCPSSETestServer
+		var testServer *fxmcpservertest.MCPStreamableHTTPTestServer
 		var logBuffer logtest.TestLogBuffer
 		var traceExporter tracetest.TestTraceExporter
 		var metricsRegistry *prometheus.Registry
@@ -45,8 +45,6 @@ func TestJobsListResource(t *testing.T) {
 
 		testClient, err := testServer.StartClient(context.Background())
 		assert.NoError(t, err)
-
-		defer testClient.Close()
 
 		req := mcp.ReadResourceRequest{}
 		req.Params.URI = "jobs://jobs"
@@ -65,7 +63,7 @@ func TestJobsListResource(t *testing.T) {
 			"level":          "info",
 			"mcpMethod":      "resources/read",
 			"mcpResourceURI": "jobs://jobs",
-			"mcpTransport":   "sse",
+			"mcpTransport":   "streamable-http",
 			"message":        "MCP request success",
 		})
 
@@ -75,7 +73,7 @@ func TestJobsListResource(t *testing.T) {
 			"MCP resources/read jobs://jobs",
 			attribute.String("mcp.method", "resources/read"),
 			attribute.String("mcp.resourceURI", "jobs://jobs"),
-			attribute.String("mcp.transport", "sse"),
+			attribute.String("mcp.transport", "streamable-http"),
 		)
 
 		expectedMetric := `

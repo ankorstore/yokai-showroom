@@ -55,12 +55,14 @@ func (t *CreateGopherTool) Handle() server.ToolHandlerFunc {
 
 		log.CtxLogger(ctx).Info().Msg("CreateGopherTool.Handle")
 
-		name, ok := request.Params.Arguments["name"].(string)
+		args := request.GetArguments()
+
+		name, ok := args["name"].(string)
 		if !ok {
 			return nil, errors.New("gopher name must be a string")
 		}
 
-		job, ok := request.Params.Arguments["job"].(string)
+		job, ok := args["job"].(string)
 		if !ok {
 			return nil, errors.New("gopher job must be a string")
 		}

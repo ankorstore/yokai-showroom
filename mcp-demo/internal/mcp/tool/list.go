@@ -53,7 +53,7 @@ func (t *ListGophersTool) Handle() server.ToolHandlerFunc {
 		log.CtxLogger(ctx).Info().Msg("ListGophersTool.Handle")
 
 		job := ""
-		jobParam, ok := request.Params.Arguments["job"]
+		jobParam, ok := request.GetArguments()["job"]
 		if ok {
 			job = jobParam.(string)
 		}
